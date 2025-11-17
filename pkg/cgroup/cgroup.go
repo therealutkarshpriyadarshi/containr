@@ -6,7 +6,12 @@ import (
 	"path/filepath"
 	"strconv"
 	"syscall"
+
+	"github.com/therealutkarshpriyadarshi/containr/pkg/errors"
+	"github.com/therealutkarshpriyadarshi/containr/pkg/logger"
 )
+
+var log = logger.New("cgroup")
 
 // Cgroup represents a control group for resource management
 type Cgroup struct {
@@ -24,25 +29,48 @@ type Config struct {
 
 // New creates a new cgroup
 func New(config *Config) (*Cgroup, error) {
+	log.WithField("cgroup_name", config.Name).Debug("Creating new cgroup")
+
 	cg := &Cgroup{
 		Name:   config.Name,
 		Parent: "/sys/fs/cgroup",
 	}
 
+	log.WithFields(map[string]interface{}{
+		"cgroup_name": config.Name,
+		"memory_limit": config.MemoryLimit,
+		"cpu_shares": config.CPUShares,
+		"pid_limit": config.PIDLimit,
+	}).Debug("Cgroup configuration")
+
 	// Create cgroup directories for each controller
 	controllers := []string{"memory", "cpu", "pids"}
 	for _, controller := range controllers {
 		cgroupPath := filepath.Join(cg.Parent, controller, cg.Name)
+		log.WithField("cgroup_name", config.Name).Debugf("Creating cgroup directory: %s", cgroupPath)
 		if err := os.MkdirAll(cgroupPath, 0755); err != nil {
-			return nil, fmt.Errorf("failed to create cgroup directory %s: %w", cgroupPath, err)
+			log.WithError(err).WithField("cgroup_name", config.Name).Error("Failed to create cgroup directory")
+			// Clean up any created directories
+			cg.Remove()
+			return nil, errors.Wrap(errors.ErrCgroupCreate, "failed to create cgroup directory", err).
+				WithField("cgroup_name", config.Name).
+				WithField("cgroup_path", cgroupPath).
+				WithHint("Ensure you have root privileges and cgroups v1 or v2 is mounted at /sys/fs/cgroup")
 		}
 	}
 
+	log.WithField("cgroup_name", config.Name).Debug("Applying resource limits")
+
 	// Apply resource limits
 	if err := cg.applyLimits(config); err != nil {
-		return nil, fmt.Errorf("failed to apply limits: %w", err)
+		log.WithError(err).WithField("cgroup_name", config.Name).Error("Failed to apply limits")
+		// Clean up created cgroup
+		cg.Remove()
+		return nil, errors.Wrap(errors.ErrCgroupApplyLimits, "failed to apply resource limits", err).
+			WithField("cgroup_name", config.Name)
 	}
 
+	log.WithField("cgroup_name", config.Name).Info("Cgroup created successfully")
 	return cg, nil
 }
 
@@ -87,6 +115,11 @@ func (c *Cgroup) applyLimits(config *Config) error {
 
 // AddProcess adds a process to the cgroup
 func (c *Cgroup) AddProcess(pid int) error {
+	log.WithFields(map[string]interface{}{
+		"cgroup_name": c.Name,
+		"pid": pid,
+	}).Debug("Adding process to cgroup")
+
 	controllers := []string{"memory", "cpu", "pids"}
 	for _, controller := range controllers {
 		// Try cgroup v1
@@ -95,22 +128,49 @@ func (c *Cgroup) AddProcess(pid int) error {
 			// Try cgroup v2
 			procsPath = filepath.Join(c.Parent, controller, c.Name, "cgroup.procs")
 			if err := writeFile(procsPath, strconv.Itoa(pid)); err != nil {
-				return fmt.Errorf("failed to add process to cgroup: %w", err)
+				log.WithError(err).WithFields(map[string]interface{}{
+					"cgroup_name": c.Name,
+					"pid": pid,
+					"controller": controller,
+				}).Error("Failed to add process to cgroup")
+				return errors.Wrap(errors.ErrCgroupAddProcess, "failed to add process to cgroup", err).
+					WithField("cgroup_name", c.Name).
+					WithField("pid", pid).
+					WithHint("Ensure the process exists and you have root privileges")
 			}
 		}
 	}
+
+	log.WithFields(map[string]interface{}{
+		"cgroup_name": c.Name,
+		"pid": pid,
+	}).Info("Process added to cgroup successfully")
 	return nil
 }
 
 // Remove removes the cgroup
 func (c *Cgroup) Remove() error {
+	log.WithField("cgroup_name", c.Name).Debug("Removing cgroup")
+
+	var removeErrors []error
 	controllers := []string{"memory", "cpu", "pids"}
 	for _, controller := range controllers {
 		cgroupPath := filepath.Join(c.Parent, controller, c.Name)
+		log.WithField("cgroup_name", c.Name).Debugf("Removing cgroup path: %s", cgroupPath)
 		if err := os.Remove(cgroupPath); err != nil && !os.IsNotExist(err) {
-			return fmt.Errorf("failed to remove cgroup: %w", err)
+			log.WithError(err).WithField("cgroup_name", c.Name).Warn("Failed to remove cgroup path")
+			removeErrors = append(removeErrors, err)
 		}
 	}
+
+	if len(removeErrors) > 0 {
+		log.WithField("cgroup_name", c.Name).Warnf("Cgroup removal completed with %d errors", len(removeErrors))
+		return errors.Wrap(errors.ErrCgroupRemove, "failed to remove cgroup completely", removeErrors[0]).
+			WithField("cgroup_name", c.Name).
+			WithHint("Some cgroup directories may not have been removed. Check if processes are still running in the cgroup.")
+	}
+
+	log.WithField("cgroup_name", c.Name).Info("Cgroup removed successfully")
 	return nil
 }
 

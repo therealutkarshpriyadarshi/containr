@@ -13,7 +13,13 @@ A minimal container runtime built from scratch using Linux primitives. This proj
   - **Capabilities Management**: Drop/add Linux capabilities with safe defaults
   - **Seccomp Profiles**: Syscall filtering with Docker-compatible profiles
   - **LSM Support**: AppArmor and SELinux integration with auto-detection
-- ✅ **Simple CLI**: Easy-to-use command-line interface
+- ✅ **Error Handling & Logging** (Phase 1.3):
+  - **Structured Logging**: Configurable log levels with context-rich output
+  - **Error Codes**: Unique error identifiers for programmatic handling
+  - **Debug Mode**: Verbose logging for troubleshooting
+  - **User-Friendly Errors**: Clear error messages with actionable hints
+  - **Resource Cleanup**: Automatic cleanup on error paths
+- ✅ **Simple CLI**: Easy-to-use command-line interface with debug support
 - ✅ **Comprehensive Testing**: Unit and integration tests with >70% coverage
 
 ## Why Build This?
@@ -95,6 +101,19 @@ sudo ./bin/containr run /bin/bash -c "hostname"
 sudo make run-example
 ```
 
+### With Debug Mode
+
+```bash
+# Enable verbose logging for troubleshooting
+sudo ./bin/containr run --debug /bin/sh
+
+# Set specific log level
+sudo ./bin/containr run --log-level debug /bin/bash
+
+# View detailed execution steps
+sudo ./bin/containr run --debug --log-level debug /bin/sh -c "hostname"
+```
+
 ## Project Structure
 
 ```
@@ -107,10 +126,14 @@ containr/
 │   ├── cgroup/           # Cgroup resource limits
 │   ├── rootfs/           # Filesystem operations (overlay, pivot_root)
 │   ├── network/          # Network setup (veth, bridges)
-│   └── image/            # Image import/export
+│   ├── image/            # Image import/export
+│   ├── logger/           # Structured logging (Phase 1.3)
+│   └── errors/           # Error handling with codes (Phase 1.3)
 ├── examples/             # Example programs
 ├── docs/                 # Documentation
-│   └── ARCHITECTURE.md   # Detailed architecture guide
+│   ├── ARCHITECTURE.md   # Detailed architecture guide
+│   ├── LOGGING.md        # Logging guide (Phase 1.3)
+│   └── ERROR_HANDLING.md # Error handling guide (Phase 1.3)
 ├── Makefile             # Build automation
 └── README.md            # This file
 ```
@@ -412,6 +435,12 @@ You need root privileges:
 sudo ./bin/containr run /bin/sh
 ```
 
+**With debug mode**:
+```bash
+sudo ./bin/containr run --debug /bin/sh
+```
+This will show detailed logs to help identify the permission issue.
+
 ### Cgroups not working
 
 Check if cgroups v2 is enabled:
@@ -420,12 +449,34 @@ mount | grep cgroup
 # Should show /sys/fs/cgroup
 ```
 
+Enable debug logging to see detailed cgroup operations:
+```bash
+sudo ./bin/containr run --debug /bin/sh
+```
+
 ### Network issues
 
 Ensure you have CAP_NET_ADMIN capability:
 ```bash
 sudo ./bin/containr run /bin/sh
 ```
+
+### Debugging container failures
+
+Use debug mode to see detailed execution steps:
+```bash
+sudo ./bin/containr run --debug /bin/sh
+```
+
+Error messages now include helpful hints:
+```
+Error: [PERMISSION_DENIED] cannot create namespace
+Hint: Try running with sudo or as root user
+```
+
+For more troubleshooting help, see:
+- [Logging Guide](docs/LOGGING.md)
+- [Error Handling Guide](docs/ERROR_HANDLING.md)
 
 ## Comparison with Docker
 
@@ -445,8 +496,13 @@ sudo ./bin/containr run /bin/sh
 
 ## Further Reading
 
-- 📖 [Architecture Documentation](docs/ARCHITECTURE.md)
+### Containr Documentation
+- 📖 [Architecture Documentation](docs/ARCHITECTURE.md) - Detailed architecture overview
 - 🔒 [Security Guide](docs/SECURITY.md) - Comprehensive security documentation
+- 📝 [Logging Guide](docs/LOGGING.md) - Structured logging and debug mode (Phase 1.3)
+- ⚠️ [Error Handling Guide](docs/ERROR_HANDLING.md) - Error codes and best practices (Phase 1.3)
+
+### External Resources
 - 🔧 [Linux Namespaces Man Page](https://man7.org/linux/man-pages/man7/namespaces.7.html)
 - 📚 [Cgroups Documentation](https://www.kernel.org/doc/Documentation/cgroup-v2.txt)
 - 🔐 [Linux Capabilities](https://man7.org/linux/man-pages/man7/capabilities.7.html)
