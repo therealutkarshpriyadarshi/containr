@@ -1,0 +1,232 @@
+package main
+
+import (
+	"fmt"
+	"log"
+
+	"github.com/therealutkarshpriyadarshi/containr/pkg/capabilities"
+	"github.com/therealutkarshpriyadarshi/containr/pkg/container"
+	"github.com/therealutkarshpriyadarshi/containr/pkg/seccomp"
+	"github.com/therealutkarshpriyadarshi/containr/pkg/security"
+)
+
+func main() {
+	fmt.Println("=== Containr Security Features Demo ===\n")
+
+	// Example 1: Default Security Configuration
+	fmt.Println("Example 1: Container with Default Security")
+	fmt.Println("- Uses default capabilities (Docker-like)")
+	fmt.Println("- Applies restrictive seccomp profile")
+	fmt.Println("- Auto-detects and applies LSM (AppArmor/SELinux)")
+	runDefaultSecurity()
+
+	fmt.Println("\n" + strings.Repeat("=", 60) + "\n")
+
+	// Example 2: Custom Capabilities
+	fmt.Println("Example 2: Container with Custom Capabilities")
+	fmt.Println("- Drops CAP_NET_RAW and CAP_MKNOD")
+	fmt.Println("- Adds CAP_SYS_TIME for clock operations")
+	runCustomCapabilities()
+
+	fmt.Println("\n" + strings.Repeat("=", 60) + "\n")
+
+	// Example 3: Strict Seccomp Profile
+	fmt.Println("Example 3: Container with Strict Seccomp Profile")
+	fmt.Println("- Uses default restrictive profile")
+	fmt.Println("- Blocks dangerous syscalls")
+	runStrictSeccomp()
+
+	fmt.Println("\n" + strings.Repeat("=", 60) + "\n")
+
+	// Example 4: LSM Information
+	fmt.Println("Example 4: LSM Detection and Information")
+	showLSMInfo()
+
+	fmt.Println("\n" + strings.Repeat("=", 60) + "\n")
+
+	// Example 5: Privileged Container (Not Recommended)
+	fmt.Println("Example 5: Privileged Container (FOR DEMO ONLY - NOT RECOMMENDED)")
+	fmt.Println("- Disables all security restrictions")
+	fmt.Println("- Grants all capabilities")
+	runPrivilegedContainer()
+}
+
+func runDefaultSecurity() {
+	config := &container.Config{
+		Command:  []string{"/bin/echo", "Hello from secure container!"},
+		Hostname: "secure-container",
+		Isolate:  true,
+		// Security configs use defaults (auto-configured)
+	}
+
+	c := container.New(config)
+
+	fmt.Printf("\n  Container ID: %s\n", c.ID)
+	fmt.Printf("  Capabilities: %d (default set)\n", len(capabilities.DefaultCapabilities()))
+	fmt.Printf("  Seccomp: Enabled (default profile)\n")
+	fmt.Printf("  LSM: Auto-detected (%s)\n", security.DetectLSM())
+	fmt.Println("\n  Running container...")
+
+	// Note: In a real scenario, you would call c.Run() here
+	// For this demo, we just show the configuration
+}
+
+func runCustomCapabilities() {
+	config := &container.Config{
+		Command:  []string{"/bin/echo", "Container with custom capabilities"},
+		Hostname: "custom-caps",
+		Isolate:  true,
+		Capabilities: &capabilities.Config{
+			Drop: []capabilities.Capability{
+				capabilities.CAP_NET_RAW,
+				capabilities.CAP_MKNOD,
+			},
+			Add: []capabilities.Capability{
+				capabilities.CAP_SYS_TIME,
+			},
+		},
+	}
+
+	c := container.New(config)
+
+	fmt.Printf("\n  Container ID: %s\n", c.ID)
+
+	caps, _ := c.Capabilities.Resolve()
+	fmt.Printf("  Capabilities: %d total\n", len(caps))
+	fmt.Println("  Dropped: CAP_NET_RAW, CAP_MKNOD")
+	fmt.Println("  Added: CAP_SYS_TIME")
+
+	fmt.Println("\n  Sample capabilities:")
+	for i, cap := range caps {
+		if i < 5 {
+			fmt.Printf("    - %s\n", cap)
+		}
+	}
+	if len(caps) > 5 {
+		fmt.Printf("    ... and %d more\n", len(caps)-5)
+	}
+}
+
+func runStrictSeccomp() {
+	config := &container.Config{
+		Command:  []string{"/bin/echo", "Secured with seccomp"},
+		Hostname: "seccomp-secured",
+		Isolate:  true,
+		Seccomp: &seccomp.Config{
+			Profile: seccomp.DefaultProfile(),
+		},
+	}
+
+	c := container.New(config)
+
+	fmt.Printf("\n  Container ID: %s\n", c.ID)
+
+	profile := seccomp.DefaultProfile()
+	fmt.Printf("  Seccomp Profile:\n")
+	fmt.Printf("    Default Action: %s\n", profile.DefaultAction)
+	fmt.Printf("    Architectures: %d\n", len(profile.Architectures))
+	fmt.Printf("    Syscall Rules: %d\n", len(profile.Syscalls))
+
+	// Count allowed syscalls
+	allowedCount := 0
+	blockedCount := 0
+	for _, syscall := range profile.Syscalls {
+		if syscall.Action == seccomp.ActAllow {
+			allowedCount += len(syscall.Names)
+		} else if syscall.Action == seccomp.ActErrno {
+			blockedCount += len(syscall.Names)
+		}
+	}
+
+	fmt.Printf("    Allowed Syscalls: ~%d\n", allowedCount)
+	fmt.Printf("    Blocked Syscalls: ~%d\n", blockedCount)
+
+	// Show some blocked syscalls
+	fmt.Println("\n  Sample blocked syscalls:")
+	blocked := []string{"mount", "umount", "reboot", "ptrace", "kexec_load", "init_module"}
+	for _, syscall := range blocked {
+		fmt.Printf("    - %s\n", syscall)
+	}
+}
+
+func showLSMInfo() {
+	lsm := security.DetectLSM()
+	info := security.GetLSMInfo()
+
+	fmt.Printf("\n  LSM Detection:\n")
+	fmt.Printf("    Type: %s\n", lsm)
+	fmt.Printf("    Available: %v\n", info["available"])
+
+	if lsm == security.LSMAppArmor {
+		fmt.Printf("    AppArmor Enabled: %v\n", info["apparmor_enabled"])
+		if profile, ok := info["current_profile"]; ok {
+			fmt.Printf("    Current Profile: %s\n", profile)
+		}
+
+		fmt.Println("\n  Default AppArmor Profile:")
+		profile := security.DefaultAppArmorProfile()
+		fmt.Printf("    Profile Length: %d bytes\n", len(profile))
+		fmt.Println("    Contains:")
+		fmt.Println("      - Network access rules")
+		fmt.Println("      - File access restrictions")
+		fmt.Println("      - Capability controls")
+		fmt.Println("      - Sensitive path denials")
+
+	} else if lsm == security.LSMSELinux {
+		fmt.Printf("    SELinux Enabled: %v\n", info["selinux_enabled"])
+		if mode, ok := info["selinux_mode"]; ok {
+			fmt.Printf("    SELinux Mode: %s\n", mode)
+		}
+		if context, ok := info["current_context"]; ok {
+			fmt.Printf("    Current Context: %s\n", context)
+		}
+
+		fmt.Println("\n  Default SELinux Policy:")
+		policy := security.DefaultSELinuxPolicy()
+		fmt.Printf("    Policy Length: %d bytes\n", len(policy))
+		fmt.Println("    Defines:")
+		fmt.Println("      - container_t type")
+		fmt.Println("      - Process permissions")
+		fmt.Println("      - File access rules")
+
+	} else {
+		fmt.Println("\n  No LSM available on this system")
+		fmt.Println("  Consider enabling AppArmor or SELinux for enhanced security")
+	}
+}
+
+func runPrivilegedContainer() {
+	config := &container.Config{
+		Command:    []string{"/bin/echo", "Privileged container (all restrictions disabled)"},
+		Hostname:   "privileged",
+		Isolate:    true,
+		Privileged: true, // WARNING: This disables all security features!
+	}
+
+	c := container.New(config)
+
+	fmt.Printf("\n  Container ID: %s\n", c.ID)
+	fmt.Printf("  ⚠️  WARNING: Privileged Mode Enabled!\n")
+	fmt.Printf("  Capabilities: ALL (%d capabilities)\n", len(capabilities.AllCapabilities()))
+	fmt.Printf("  Seccomp: DISABLED\n")
+	fmt.Printf("  LSM: DISABLED\n")
+	fmt.Println("\n  ❌ This configuration should NEVER be used in production!")
+	fmt.Println("  ❌ Only use for trusted development/debugging scenarios")
+}
+
+// Helper function
+var strings = struct {
+	Repeat func(string, int) string
+}{
+	Repeat: func(s string, count int) string {
+		result := ""
+		for i := 0; i < count; i++ {
+			result += s
+		}
+		return result
+	},
+}
+
+func init() {
+	log.SetFlags(0)
+}

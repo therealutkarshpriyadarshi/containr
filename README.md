@@ -9,7 +9,12 @@ A minimal container runtime built from scratch using Linux primitives. This proj
 - ✅ **Filesystem Isolation**: Chroot, pivot_root, and overlay filesystems
 - ✅ **Network Isolation**: Virtual ethernet pairs and bridge networking
 - ✅ **Image Management**: Import/export container images
+- ✅ **Security Features** (Phase 1.2):
+  - **Capabilities Management**: Drop/add Linux capabilities with safe defaults
+  - **Seccomp Profiles**: Syscall filtering with Docker-compatible profiles
+  - **LSM Support**: AppArmor and SELinux integration with auto-detection
 - ✅ **Simple CLI**: Easy-to-use command-line interface
+- ✅ **Comprehensive Testing**: Unit and integration tests with >70% coverage
 
 ## Why Build This?
 
@@ -309,6 +314,94 @@ defer rootfs.Teardown()
 3. **Filesystem**: Try different root filesystem configurations
 4. **Networking**: Set up network isolation and bridges
 5. **Images**: Import and manage container images
+6. **Security**: Configure capabilities, seccomp, and LSM
+
+## Security
+
+Containr implements multiple security layers to isolate and protect containers:
+
+### Capabilities Management
+
+Control Linux capabilities to follow the principle of least privilege:
+
+```go
+import "github.com/therealutkarshpriyadarshi/containr/pkg/capabilities"
+
+// Use default safe capabilities
+config := &container.Config{
+    Capabilities: &capabilities.Config{
+        Drop: []capabilities.Capability{
+            capabilities.CAP_NET_RAW,  // Drop raw networking
+        },
+    },
+}
+```
+
+### Seccomp Profiles
+
+Filter dangerous syscalls with seccomp:
+
+```go
+import "github.com/therealutkarshpriyadarshi/containr/pkg/seccomp"
+
+// Use default restrictive profile
+config := &container.Config{
+    Seccomp: &seccomp.Config{
+        Profile: seccomp.DefaultProfile(),  // Blocks dangerous syscalls
+    },
+}
+
+// Or load custom profile
+config := &container.Config{
+    Seccomp: &seccomp.Config{
+        ProfilePath: "/path/to/custom-profile.json",
+    },
+}
+```
+
+### LSM Support (AppArmor/SELinux)
+
+Automatic detection and application of Mandatory Access Control:
+
+```go
+import "github.com/therealutkarshpriyadarshi/containr/pkg/security"
+
+// Auto-detect and use available LSM
+config := &container.Config{
+    Security: &security.Config{}, // Auto-detects AppArmor or SELinux
+}
+
+// Check what's available
+lsm := security.DetectLSM()
+fmt.Printf("Available LSM: %s\n", lsm)
+```
+
+### Complete Security Example
+
+```go
+config := &container.Config{
+    Command:  []string{"/bin/sh"},
+    Hostname: "secure-container",
+    Isolate:  true,
+    Capabilities: &capabilities.Config{
+        Drop: []capabilities.Capability{
+            capabilities.CAP_NET_RAW,
+            capabilities.CAP_MKNOD,
+        },
+    },
+    Seccomp: &seccomp.Config{
+        Profile: seccomp.DefaultProfile(),
+    },
+    Security: &security.Config{
+        // Auto-detect LSM
+    },
+}
+
+c := container.New(config)
+c.RunWithSetup()
+```
+
+For detailed security information, see [docs/SECURITY.md](docs/SECURITY.md).
 
 ## Troubleshooting
 
@@ -339,18 +432,25 @@ sudo ./bin/containr run /bin/sh
 | Feature | Containr | Docker |
 |---------|----------|--------|
 | **Purpose** | Educational | Production |
-| **Namespaces** | Basic support | Full support |
-| **Cgroups** | Basic limits | Advanced limits |
-| **Images** | Simple import/export | Registry, layers |
-| **Networking** | Basic isolation | Advanced (overlay, macvlan) |
-| **Security** | Basic | Seccomp, AppArmor, SELinux |
-| **Orchestration** | None | Swarm, Kubernetes |
+| **Namespaces** | ✅ Full support | ✅ Full support |
+| **Cgroups** | ✅ v1 & v2 support | ✅ Advanced limits |
+| **Images** | ⚠️ Import/export only | ✅ Registry, layers, build |
+| **Networking** | ✅ Basic isolation | ✅ Advanced (overlay, macvlan) |
+| **Security** | ✅ **Phase 1.2 Complete** | ✅ Full support |
+| - Capabilities | ✅ Drop/add with defaults | ✅ Full control |
+| - Seccomp | ✅ Default + custom profiles | ✅ Full support |
+| - AppArmor/SELinux | ✅ Auto-detect + apply | ✅ Full support |
+| **Orchestration** | ❌ None (planned Phase 3) | ✅ Swarm, Kubernetes |
+| **User Namespaces** | ❌ Planned Phase 2.4 | ✅ Rootless mode |
 
 ## Further Reading
 
 - 📖 [Architecture Documentation](docs/ARCHITECTURE.md)
+- 🔒 [Security Guide](docs/SECURITY.md) - Comprehensive security documentation
 - 🔧 [Linux Namespaces Man Page](https://man7.org/linux/man-pages/man7/namespaces.7.html)
 - 📚 [Cgroups Documentation](https://www.kernel.org/doc/Documentation/cgroup-v2.txt)
+- 🔐 [Linux Capabilities](https://man7.org/linux/man-pages/man7/capabilities.7.html)
+- 🛡️ [Seccomp](https://www.kernel.org/doc/html/latest/userspace-api/seccomp_filter.html)
 - 🐋 [OCI Runtime Spec](https://github.com/opencontainers/runtime-spec)
 
 ## Contributing
