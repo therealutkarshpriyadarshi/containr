@@ -19,9 +19,9 @@ type DNSConfig struct {
 func DefaultDNSConfig() *DNSConfig {
 	return &DNSConfig{
 		Nameservers: []string{
-			"8.8.8.8",       // Google DNS
-			"8.8.4.4",       // Google DNS secondary
-			"1.1.1.1",       // Cloudflare DNS
+			"8.8.8.8", // Google DNS
+			"8.8.4.4", // Google DNS secondary
+			"1.1.1.1", // Cloudflare DNS
 		},
 		SearchDomains: []string{},
 		Options:       []string{"ndots:0"},

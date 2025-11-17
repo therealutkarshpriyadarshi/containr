@@ -76,12 +76,12 @@ func TestParseInstruction(t *testing.T) {
 	parser := NewParser()
 
 	tests := []struct {
-		name        string
-		line        string
-		wantCmd     string
-		wantArgs    []string
-		wantFlags   map[string]string
-		wantErr     bool
+		name      string
+		line      string
+		wantCmd   string
+		wantArgs  []string
+		wantFlags map[string]string
+		wantErr   bool
 	}{
 		{
 			name:     "FROM instruction",

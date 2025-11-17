@@ -31,19 +31,19 @@ const (
 	EventContainerUnhealthy EventType = "container:health_status:unhealthy"
 
 	// Resource events
-	EventContainerOOM       EventType = "container:oom"
-	EventContainerThrottle  EventType = "container:throttle"
+	EventContainerOOM      EventType = "container:oom"
+	EventContainerThrottle EventType = "container:throttle"
 
 	// Network events
-	EventNetworkCreate  EventType = "network:create"
-	EventNetworkRemove  EventType = "network:remove"
-	EventNetworkConnect EventType = "network:connect"
+	EventNetworkCreate     EventType = "network:create"
+	EventNetworkRemove     EventType = "network:remove"
+	EventNetworkConnect    EventType = "network:connect"
 	EventNetworkDisconnect EventType = "network:disconnect"
 
 	// Volume events
-	EventVolumeCreate EventType = "volume:create"
-	EventVolumeRemove EventType = "volume:remove"
-	EventVolumeMount  EventType = "volume:mount"
+	EventVolumeCreate  EventType = "volume:create"
+	EventVolumeRemove  EventType = "volume:remove"
+	EventVolumeMount   EventType = "volume:mount"
 	EventVolumeUnmount EventType = "volume:unmount"
 
 	// Image events

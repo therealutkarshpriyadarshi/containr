@@ -9,51 +9,51 @@ type ErrorCode string
 
 const (
 	// Container errors
-	ErrContainerCreate     ErrorCode = "CONTAINER_CREATE"
-	ErrContainerStart      ErrorCode = "CONTAINER_START"
-	ErrContainerStop       ErrorCode = "CONTAINER_STOP"
-	ErrContainerNotFound   ErrorCode = "CONTAINER_NOT_FOUND"
+	ErrContainerCreate        ErrorCode = "CONTAINER_CREATE"
+	ErrContainerStart         ErrorCode = "CONTAINER_START"
+	ErrContainerStop          ErrorCode = "CONTAINER_STOP"
+	ErrContainerNotFound      ErrorCode = "CONTAINER_NOT_FOUND"
 	ErrContainerAlreadyExists ErrorCode = "CONTAINER_ALREADY_EXISTS"
 
 	// Namespace errors
-	ErrNamespaceCreate     ErrorCode = "NAMESPACE_CREATE"
-	ErrNamespaceSetup      ErrorCode = "NAMESPACE_SETUP"
+	ErrNamespaceCreate ErrorCode = "NAMESPACE_CREATE"
+	ErrNamespaceSetup  ErrorCode = "NAMESPACE_SETUP"
 
 	// Cgroup errors
-	ErrCgroupCreate        ErrorCode = "CGROUP_CREATE"
-	ErrCgroupApplyLimits   ErrorCode = "CGROUP_APPLY_LIMITS"
-	ErrCgroupAddProcess    ErrorCode = "CGROUP_ADD_PROCESS"
-	ErrCgroupRemove        ErrorCode = "CGROUP_REMOVE"
-	ErrCgroupNotFound      ErrorCode = "CGROUP_NOT_FOUND"
+	ErrCgroupCreate      ErrorCode = "CGROUP_CREATE"
+	ErrCgroupApplyLimits ErrorCode = "CGROUP_APPLY_LIMITS"
+	ErrCgroupAddProcess  ErrorCode = "CGROUP_ADD_PROCESS"
+	ErrCgroupRemove      ErrorCode = "CGROUP_REMOVE"
+	ErrCgroupNotFound    ErrorCode = "CGROUP_NOT_FOUND"
 
 	// RootFS errors
-	ErrRootFSNotFound      ErrorCode = "ROOTFS_NOT_FOUND"
-	ErrRootFSMount         ErrorCode = "ROOTFS_MOUNT"
-	ErrRootFSUnmount       ErrorCode = "ROOTFS_UNMOUNT"
-	ErrRootFSPivot         ErrorCode = "ROOTFS_PIVOT"
+	ErrRootFSNotFound ErrorCode = "ROOTFS_NOT_FOUND"
+	ErrRootFSMount    ErrorCode = "ROOTFS_MOUNT"
+	ErrRootFSUnmount  ErrorCode = "ROOTFS_UNMOUNT"
+	ErrRootFSPivot    ErrorCode = "ROOTFS_PIVOT"
 
 	// Network errors
-	ErrNetworkCreate       ErrorCode = "NETWORK_CREATE"
-	ErrNetworkSetup        ErrorCode = "NETWORK_SETUP"
-	ErrNetworkCleanup      ErrorCode = "NETWORK_CLEANUP"
-	ErrNetworkNotFound     ErrorCode = "NETWORK_NOT_FOUND"
+	ErrNetworkCreate   ErrorCode = "NETWORK_CREATE"
+	ErrNetworkSetup    ErrorCode = "NETWORK_SETUP"
+	ErrNetworkCleanup  ErrorCode = "NETWORK_CLEANUP"
+	ErrNetworkNotFound ErrorCode = "NETWORK_NOT_FOUND"
 
 	// Image errors
-	ErrImageNotFound       ErrorCode = "IMAGE_NOT_FOUND"
-	ErrImageImport         ErrorCode = "IMAGE_IMPORT"
-	ErrImageExport         ErrorCode = "IMAGE_EXPORT"
+	ErrImageNotFound ErrorCode = "IMAGE_NOT_FOUND"
+	ErrImageImport   ErrorCode = "IMAGE_IMPORT"
+	ErrImageExport   ErrorCode = "IMAGE_EXPORT"
 
 	// Security errors
 	ErrSecurityCapabilities ErrorCode = "SECURITY_CAPABILITIES"
-	ErrSecuritySeccomp     ErrorCode = "SECURITY_SECCOMP"
-	ErrSecurityLSM         ErrorCode = "SECURITY_LSM"
+	ErrSecuritySeccomp      ErrorCode = "SECURITY_SECCOMP"
+	ErrSecurityLSM          ErrorCode = "SECURITY_LSM"
 
 	// Generic errors
-	ErrInvalidConfig       ErrorCode = "INVALID_CONFIG"
-	ErrInvalidArgument     ErrorCode = "INVALID_ARGUMENT"
-	ErrPermissionDenied    ErrorCode = "PERMISSION_DENIED"
-	ErrNotImplemented      ErrorCode = "NOT_IMPLEMENTED"
-	ErrInternal            ErrorCode = "INTERNAL"
+	ErrInvalidConfig    ErrorCode = "INVALID_CONFIG"
+	ErrInvalidArgument  ErrorCode = "INVALID_ARGUMENT"
+	ErrPermissionDenied ErrorCode = "PERMISSION_DENIED"
+	ErrNotImplemented   ErrorCode = "NOT_IMPLEMENTED"
+	ErrInternal         ErrorCode = "INTERNAL"
 )
 
 // ContainrError is a custom error type with error code and context

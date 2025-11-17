@@ -11,12 +11,12 @@ import (
 type NamespaceType int
 
 const (
-	UTS NamespaceType = 1 << iota // Hostname and domain name
-	IPC                            // Inter-process communication
-	PID                            // Process IDs
-	Mount                          // Mount points
-	Network                        // Network devices, stacks, ports
-	User                           // User and group IDs
+	UTS     NamespaceType = 1 << iota // Hostname and domain name
+	IPC                               // Inter-process communication
+	PID                               // Process IDs
+	Mount                             // Mount points
+	Network                           // Network devices, stacks, ports
+	User                              // User and group IDs
 )
 
 // Config holds namespace configuration

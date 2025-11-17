@@ -6,12 +6,12 @@ import (
 
 func TestParsePortMapping(t *testing.T) {
 	tests := []struct {
-		name        string
-		portStr     string
-		wantHost    int
-		wantCont    int
-		wantProto   string
-		wantErr     bool
+		name      string
+		portStr   string
+		wantHost  int
+		wantCont  int
+		wantProto string
+		wantErr   bool
 	}{
 		{
 			name:      "simple port",
@@ -46,14 +46,14 @@ func TestParsePortMapping(t *testing.T) {
 			wantErr:   false,
 		},
 		{
-			name:      "invalid protocol",
-			portStr:   "8080:80/sctp",
-			wantErr:   true,
+			name:    "invalid protocol",
+			portStr: "8080:80/sctp",
+			wantErr: true,
 		},
 		{
-			name:      "invalid port",
-			portStr:   "abc:80",
-			wantErr:   true,
+			name:    "invalid port",
+			portStr: "abc:80",
+			wantErr: true,
 		},
 	}
 

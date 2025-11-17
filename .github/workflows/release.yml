@@ -12,53 +12,140 @@ jobs:
   release:
     name: Create Release
     runs-on: ubuntu-latest
-
     steps:
-    - name: Check out code
-      uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.23'
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
 
-    - name: Build binaries
-      run: |
-        # Build for multiple architectures
-        GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o bin/containr-linux-amd64 ./cmd/containr
-        GOOS=linux GOARCH=arm64 go build -ldflags="-s -w" -o bin/containr-linux-arm64 ./cmd/containr
-        GOOS=linux GOARCH=arm go build -ldflags="-s -w" -o bin/containr-linux-arm ./cmd/containr
+      - name: Get version
+        id: get_version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          echo "Version: $VERSION"
 
-    - name: Generate checksums
-      run: |
-        cd bin
-        sha256sum * > checksums.txt
-        cat checksums.txt
+      - name: Run tests
+        run: make test-unit
 
-    - name: Generate changelog
-      id: changelog
-      run: |
-        echo "## What's Changed" > CHANGELOG.md
-        git log --pretty=format:"- %s (%h)" $(git describe --tags --abbrev=0 HEAD^)..HEAD >> CHANGELOG.md
-        cat CHANGELOG.md
+      - name: Build release binaries
+        env:
+          VERSION: ${{ steps.get_version.outputs.VERSION }}
+        run: |
+          make release VERSION=$VERSION
 
-    - name: Create Release
-      uses: softprops/action-gh-release@v2
-      with:
-        files: |
-          bin/containr-linux-amd64
-          bin/containr-linux-arm64
-          bin/containr-linux-arm
-          bin/checksums.txt
-        body_path: CHANGELOG.md
-        draft: false
-        prerelease: false
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create release archives
+        env:
+          VERSION: ${{ steps.get_version.outputs.VERSION }}
+        run: |
+          make release-archive VERSION=$VERSION
 
-    - name: Update latest tag
-      run: |
-        git tag -f latest
-        git push -f origin latest
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Get previous tag
+          PREV_TAG=$(git describe --tags --abbrev=0 $(git rev-list --tags --skip=1 --max-count=1) 2>/dev/null || echo "")
+
+          # Generate changelog
+          if [ -n "$PREV_TAG" ]; then
+            CHANGELOG=$(git log --pretty=format:"- %s" $PREV_TAG..HEAD)
+          else
+            CHANGELOG=$(git log --pretty=format:"- %s")
+          fi
+
+          # Write changelog to file
+          echo "## Changes" > CHANGELOG.txt
+          echo "" >> CHANGELOG.txt
+          echo "$CHANGELOG" >> CHANGELOG.txt
+
+          # Set output
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          cat CHANGELOG.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: Release ${{ steps.get_version.outputs.VERSION }}
+          body: |
+            # Containr ${{ steps.get_version.outputs.VERSION }}
+
+            🎉 Phase 4 Complete - Production Polish!
+
+            ## Highlights
+            - ✅ Performance optimization (profiling, benchmarking)
+            - ✅ OCI runtime specification compliance
+            - ✅ Advanced documentation and tutorials
+            - ✅ Release automation and distribution
+
+            ## Installation
+
+            ### Linux (amd64)
+            ```bash
+            curl -LO https://github.com/${{ github.repository }}/releases/download/v${{ steps.get_version.outputs.VERSION }}/containr-${{ steps.get_version.outputs.VERSION }}-linux-amd64.tar.gz
+            tar -xzf containr-${{ steps.get_version.outputs.VERSION }}-linux-amd64.tar.gz
+            sudo mv containr-linux-amd64 /usr/local/bin/containr
+            ```
+
+            ### Linux (arm64)
+            ```bash
+            curl -LO https://github.com/${{ github.repository }}/releases/download/v${{ steps.get_version.outputs.VERSION }}/containr-${{ steps.get_version.outputs.VERSION }}-linux-arm64.tar.gz
+            tar -xzf containr-${{ steps.get_version.outputs.VERSION }}-linux-arm64.tar.gz
+            sudo mv containr-linux-arm64 /usr/local/bin/containr
+            ```
+
+            ${{ steps.changelog.outputs.changelog }}
+
+            ## Verification
+
+            All binaries are checksummed. Verify with:
+            ```bash
+            sha256sum -c checksums.txt
+            ```
+          files: |
+            bin/release/*.tar.gz
+            bin/release/checksums.txt
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  docker:
+    name: Build Docker Image
+    runs-on: ubuntu-latest
+    needs: release
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Get version
+        id: get_version
+        run: |
+          VERSION=${GITHUB_REF#refs/tags/v}
+          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+        if: ${{ secrets.DOCKER_USERNAME != '' }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: ${{ secrets.DOCKER_USERNAME != '' }}
+          tags: |
+            ${{ secrets.DOCKER_USERNAME }}/containr:${{ steps.get_version.outputs.VERSION }}
+            ${{ secrets.DOCKER_USERNAME }}/containr:latest
+          platforms: linux/amd64,linux/arm64
+        if: ${{ secrets.DOCKER_USERNAME != '' }}

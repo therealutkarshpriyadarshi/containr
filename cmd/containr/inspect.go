@@ -58,7 +58,7 @@ func init() {
 
 // stats command
 var (
-	statsAll    bool
+	statsAll      bool
 	statsNoStream bool
 )
 

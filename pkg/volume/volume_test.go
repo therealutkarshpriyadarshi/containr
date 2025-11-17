@@ -170,12 +170,12 @@ func TestManagerExists(t *testing.T) {
 
 func TestParseVolumeString(t *testing.T) {
 	tests := []struct {
-		name        string
-		volumeStr   string
-		expectErr   bool
-		expectType  VolumeType
-		expectRO    bool
-		expectDest  string
+		name       string
+		volumeStr  string
+		expectErr  bool
+		expectType VolumeType
+		expectRO   bool
+		expectDest string
 	}{
 		{
 			name:       "absolute path bind mount",

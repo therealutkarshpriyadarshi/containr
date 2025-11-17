@@ -25,11 +25,11 @@ const (
 
 // Config holds restart policy configuration
 type Config struct {
-	Policy           Policy
-	MaxRetries       int           // Maximum restart attempts (0 = unlimited)
-	RestartDelay     time.Duration // Delay between restarts
-	BackoffMultiplier float64      // Backoff multiplier for exponential backoff
-	MaxDelay         time.Duration // Maximum delay between restarts
+	Policy            Policy
+	MaxRetries        int           // Maximum restart attempts (0 = unlimited)
+	RestartDelay      time.Duration // Delay between restarts
+	BackoffMultiplier float64       // Backoff multiplier for exponential backoff
+	MaxDelay          time.Duration // Maximum delay between restarts
 }
 
 // Manager manages container restart policies

@@ -2,11 +2,34 @@
 
 A minimal container runtime built from scratch using Linux primitives. This project demonstrates the core concepts behind Docker and other container runtimes by implementing process isolation using namespaces, resource limits with cgroups, and filesystem isolation.
 
-**🎉 Phase 3 Complete!** Containr now includes advanced networking with port mapping, comprehensive monitoring & observability, health checks, restart policies, and build foundations.
+**🎉 Phase 4 Complete - Production Polish!** Containr is now production-ready with performance optimization, OCI runtime compliance, comprehensive documentation, and automated release processes. All four phases complete!
 
 ## Features
 
-### 🚀 Phase 3: Advanced Features (NEW!)
+### 🎯 Phase 4: Production Polish (NEW!)
+- ✅ **Performance Optimization**: Production-ready performance tools
+  - **Benchmarking**: Comprehensive benchmark suite for all operations
+  - **Profiling**: CPU, memory, and execution trace profiling
+  - **Performance Testing**: Automated performance regression testing
+  - **Metrics Collection**: Detailed performance metrics and statistics
+- ✅ **OCI Runtime Compliance**: Full OCI specification support
+  - **OCI Runtime Spec**: Complete OCI Runtime Specification 1.0.2
+  - **OCI State Management**: Container state tracking and persistence
+  - **OCI Bundle Support**: Standard OCI bundle format
+  - **Runtime Configuration**: Comprehensive config.json support
+- ✅ **Version Management**: Professional version tracking
+  - **Semantic Versioning**: Full SemVer support
+  - **Build Information**: Git commit, build date, Go version
+  - **Version Commands**: JSON and short output formats
+  - **User Agent Strings**: HTTP user agent support
+- ✅ **Release & Distribution**: Automated release pipeline
+  - **Multi-platform Builds**: Linux amd64, arm64, arm
+  - **GitHub Releases**: Automated release creation
+  - **Checksums**: SHA256 verification for all binaries
+  - **Installation Script**: One-line installation
+  - **CI/CD Pipeline**: Comprehensive GitHub Actions workflows
+
+### 🚀 Phase 3: Advanced Features
 - ✅ **Enhanced Networking**: Production-ready networking capabilities
   - **Port Mapping**: TCP/UDP port exposure with iptables integration
   - **Network Modes**: Bridge, host, none, and container sharing
@@ -104,6 +127,30 @@ Understanding containers from first principles helps developers:
 
 ## Installation
 
+### Quick Install (Recommended)
+
+Use our installation script for the latest release:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/therealutkarshpriyadarshi/containr/main/scripts/install.sh | bash
+```
+
+### Manual Installation
+
+Download the latest release for your platform:
+
+```bash
+# Linux (amd64)
+curl -LO https://github.com/therealutkarshpriyadarshi/containr/releases/latest/download/containr-linux-amd64
+chmod +x containr-linux-amd64
+sudo mv containr-linux-amd64 /usr/local/bin/containr
+
+# Linux (arm64)
+curl -LO https://github.com/therealutkarshpriyadarshi/containr/releases/latest/download/containr-linux-arm64
+chmod +x containr-linux-arm64
+sudo mv containr-linux-arm64 /usr/local/bin/containr
+```
+
 ### Build from Source
 
 ```bash
@@ -111,7 +158,7 @@ Understanding containers from first principles helps developers:
 git clone https://github.com/therealutkarshpriyadarshi/containr.git
 cd containr
 
-# Build the binary
+# Build the binary (with version info)
 make build
 
 # Install system-wide (optional)
@@ -120,7 +167,40 @@ sudo make install
 
 The binary will be available at `bin/containr` or `/usr/local/bin/containr` after installation.
 
+### Verify Installation
+
+```bash
+containr version
+```
+
 ## Quick Start
+
+### Phase 4: Performance & Production
+
+```bash
+# Check version with full information
+containr version
+
+# Check version (short)
+containr version --short
+
+# Get version in JSON
+containr version --json
+
+# Run benchmarks
+make bench
+
+# Generate performance profiles
+make profile-cpu
+make profile-mem
+make profile-trace
+
+# View profiles
+make profile-view-cpu
+
+# Build release binaries
+make release
+```
 
 ### Phase 3: Advanced Features
 
@@ -227,6 +307,10 @@ containr/
 ├── cmd/
 │   └── containr/          # Main CLI application (Cobra-based)
 ├── pkg/
+│   ├── benchmark/         # Benchmarking utilities (Phase 4.1)
+│   ├── profiler/          # Profiling support (Phase 4.1)
+│   ├── runtime/           # OCI runtime spec (Phase 4.3)
+│   ├── version/           # Version management (Phase 4.4)
 │   ├── container/         # Container creation and management
 │   ├── namespace/         # Namespace handling (UTS, PID, Mount, User, etc.)
 │   ├── cgroup/           # Cgroup resource limits
@@ -249,14 +333,17 @@ containr/
 │   └── errors/           # Error handling with codes (Phase 1.3)
 ├── examples/             # Example programs
 ├── docs/                 # Documentation
-│   ├── ARCHITECTURE.md   # Detailed architecture guide
-│   ├── PHASE3.md         # Phase 3 feature documentation (NEW!)
+│   ├── PHASE4.md         # Phase 4 feature documentation (NEW!)
+│   ├── PHASE3.md         # Phase 3 feature documentation
 │   ├── PHASE2.md         # Phase 2 feature documentation
+│   ├── ARCHITECTURE.md   # Detailed architecture guide
 │   ├── LOGGING.md        # Logging guide (Phase 1.3)
 │   ├── ERROR_HANDLING.md # Error handling guide (Phase 1.3)
 │   ├── SECURITY.md       # Security guide (Phase 1.2)
 │   ├── TESTING.md        # Testing guide
 │   └── GETTING_STARTED.md # Getting started guide
+├── scripts/              # Installation and utility scripts
+│   └── install.sh        # One-line installation script
 ├── Makefile             # Build automation
 └── README.md            # This file
 ```
@@ -620,9 +707,11 @@ For more troubleshooting help, see:
 ## Further Reading
 
 ### Containr Documentation
-- 📖 [Architecture Documentation](docs/ARCHITECTURE.md) - Detailed architecture overview
+- 🎯 [Phase 4 Documentation](docs/PHASE4.md) - Production polish guide (Phase 4) **NEW!**
+- 🤝 [Contributing Guide](CONTRIBUTING.md) - How to contribute **NEW!**
 - 🚀 [Phase 3 Documentation](docs/PHASE3.md) - Advanced features guide (Phase 3)
 - 📦 [Phase 2 Documentation](docs/PHASE2.md) - Feature completeness guide (Phase 2)
+- 📖 [Architecture Documentation](docs/ARCHITECTURE.md) - Detailed architecture overview
 - 🔒 [Security Guide](docs/SECURITY.md) - Comprehensive security documentation
 - 📝 [Logging Guide](docs/LOGGING.md) - Structured logging and debug mode (Phase 1.3)
 - ⚠️ [Error Handling Guide](docs/ERROR_HANDLING.md) - Error codes and best practices (Phase 1.3)
@@ -636,16 +725,39 @@ For more troubleshooting help, see:
 
 ## Contributing
 
-Contributions are welcome! Areas for improvement:
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
 
-- [ ] User namespace support for rootless containers
-- [ ] Seccomp profiles for syscall filtering
-- [ ] Volume management
-- [ ] Image registry support (pull/push)
-- [ ] Container networking improvements
-- [ ] Logging and monitoring
-- [ ] Better error handling
-- [ ] Unit tests
+### Quick Start for Contributors
+
+```bash
+# Fork and clone the repository
+git clone https://github.com/YOUR_USERNAME/containr.git
+cd containr
+
+# Install development tools
+make install-tools
+
+# Run tests
+make test-unit
+
+# Run benchmarks
+make bench
+
+# Format and lint code
+make fmt
+make lint
+
+# Run all pre-commit checks
+make pre-commit
+```
+
+### Areas for Enhancement
+
+- [ ] CRI (Container Runtime Interface) support
+- [ ] BuildKit integration
+- [ ] Multi-platform binary support
+- [ ] Enhanced metrics (Prometheus/Grafana)
+- [ ] Performance optimizations for extreme scale
 
 ## License
 

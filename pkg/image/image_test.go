@@ -507,10 +507,10 @@ func TestManifestJSON(t *testing.T) {
 
 func TestImageNaming(t *testing.T) {
 	tests := []struct {
-		name     string
+		name      string
 		imageName string
-		tag      string
-		expected string
+		tag       string
+		expected  string
 	}{
 		{
 			name:      "Simple image name",
