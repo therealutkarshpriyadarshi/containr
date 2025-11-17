@@ -2,13 +2,32 @@
 
 A minimal container runtime built from scratch using Linux primitives. This project demonstrates the core concepts behind Docker and other container runtimes by implementing process isolation using namespaces, resource limits with cgroups, and filesystem isolation.
 
+**🎉 Phase 2 Complete!** Containr now features a full Docker-like CLI with volume management, registry integration, and rootless container support.
+
 ## Features
 
+### ✨ Phase 2: Feature Completeness (NEW!)
+- ✅ **Enhanced CLI**: Docker-like commands with Cobra framework
+  - **Container Lifecycle**: `run`, `create`, `start`, `stop`, `rm`, `ps`, `logs`, `exec`
+  - **Image Management**: `pull`, `images`, `rmi`, `import`, `export`
+  - **Inspection**: `inspect`, `stats`, `top`
+- ✅ **Volume Management**: Persistent data storage
+  - **Named Volumes**: Managed storage for containers
+  - **Bind Mounts**: Mount host directories into containers
+  - **Volume Commands**: `volume create`, `volume ls`, `volume rm`, `volume inspect`, `volume prune`
+- ✅ **Registry Integration**: Pull images from Docker Hub and OCI registries
+  - **Docker Hub Support**: Pull official and user images
+  - **OCI Compliance**: Full OCI image format support
+  - **Layer Extraction**: Automatic extraction to rootfs
+- ✅ **User Namespace Support**: Rootless containers for enhanced security
+  - **UID/GID Remapping**: Run as non-root with subuid/subgid
+  - **Enhanced Security**: Root in container = unprivileged on host
+
+### Phase 1: Foundation
 - ✅ **Namespace Isolation**: UTS, PID, Mount, IPC, Network namespaces
 - ✅ **Resource Limits**: CPU, memory, and PID limits using cgroups
 - ✅ **Filesystem Isolation**: Chroot, pivot_root, and overlay filesystems
 - ✅ **Network Isolation**: Virtual ethernet pairs and bridge networking
-- ✅ **Image Management**: Import/export container images
 - ✅ **Security Features** (Phase 1.2):
   - **Capabilities Management**: Drop/add Linux capabilities with safe defaults
   - **Seccomp Profiles**: Syscall filtering with Docker-compatible profiles
@@ -19,7 +38,6 @@ A minimal container runtime built from scratch using Linux primitives. This proj
   - **Debug Mode**: Verbose logging for troubleshooting
   - **User-Friendly Errors**: Clear error messages with actionable hints
   - **Resource Cleanup**: Automatic cleanup on error paths
-- ✅ **Simple CLI**: Easy-to-use command-line interface with debug support
 - ✅ **Comprehensive Testing**: Unit and integration tests with >70% coverage
 
 ## Why Build This?
@@ -81,37 +99,83 @@ The binary will be available at `bin/containr` or `/usr/local/bin/containr` afte
 
 ## Quick Start
 
+### Phase 2: Enhanced Features
+
+```bash
+# Pull an image from Docker Hub
+sudo ./bin/containr pull alpine
+
+# Run container with named volume
+sudo ./bin/containr volume create mydata
+sudo ./bin/containr run --name myapp -v mydata:/data alpine /bin/sh
+
+# List running containers
+sudo ./bin/containr ps
+
+# Execute command in running container
+sudo ./bin/containr exec myapp ls /data
+
+# View container logs
+sudo ./bin/containr logs myapp
+
+# Inspect container details
+sudo ./bin/containr inspect myapp
+
+# Stop and remove
+sudo ./bin/containr stop myapp
+sudo ./bin/containr rm myapp
+```
+
 ### Basic Usage
 
 ```bash
 # Run a simple command in an isolated container
-sudo ./bin/containr run /bin/echo "Hello from container!"
+sudo ./bin/containr run alpine /bin/echo "Hello from container!"
 
 # Run an interactive shell
-sudo ./bin/containr run /bin/sh
+sudo ./bin/containr run alpine /bin/sh
 
-# Run a command with custom hostname
-sudo ./bin/containr run /bin/bash -c "hostname"
+# Run with custom name and hostname
+sudo ./bin/containr run --name mycontainer --hostname myhost alpine /bin/sh
+```
+
+### With Volumes
+
+```bash
+# Bind mount host directory
+sudo ./bin/containr run -v /host/path:/container/path alpine ls /container/path
+
+# Read-only mount
+sudo ./bin/containr run -v /host/config:/app/config:ro alpine cat /app/config/file
+
+# Multiple volumes
+sudo ./bin/containr run \
+  -v /host/data:/app/data \
+  -v /host/config:/app/config:ro \
+  alpine /app/start.sh
 ```
 
 ### With Resource Limits
 
 ```bash
-# Run with resource limits (see examples/simple.go)
-sudo make run-example
+# Run with memory and CPU limits
+sudo ./bin/containr run --memory 100m --cpus 0.5 alpine /bin/sh
+
+# With PID limit
+sudo ./bin/containr run --pids 50 alpine /bin/sh
 ```
 
 ### With Debug Mode
 
 ```bash
 # Enable verbose logging for troubleshooting
-sudo ./bin/containr run --debug /bin/sh
+sudo ./bin/containr run --debug alpine /bin/sh
 
 # Set specific log level
-sudo ./bin/containr run --log-level debug /bin/bash
+sudo ./bin/containr run --log-level debug alpine /bin/bash
 
 # View detailed execution steps
-sudo ./bin/containr run --debug --log-level debug /bin/sh -c "hostname"
+sudo ./bin/containr run --debug --log-level debug alpine /bin/sh -c "hostname"
 ```
 
 ## Project Structure
@@ -119,21 +183,32 @@ sudo ./bin/containr run --debug --log-level debug /bin/sh -c "hostname"
 ```
 containr/
 ├── cmd/
-│   └── containr/          # Main CLI application
+│   └── containr/          # Main CLI application (Cobra-based)
 ├── pkg/
 │   ├── container/         # Container creation and management
-│   ├── namespace/         # Namespace handling (UTS, PID, Mount, etc.)
+│   ├── namespace/         # Namespace handling (UTS, PID, Mount, User, etc.)
 │   ├── cgroup/           # Cgroup resource limits
 │   ├── rootfs/           # Filesystem operations (overlay, pivot_root)
 │   ├── network/          # Network setup (veth, bridges)
 │   ├── image/            # Image import/export
+│   ├── state/            # Container state persistence (Phase 2.1)
+│   ├── volume/           # Volume management (Phase 2.2)
+│   ├── registry/         # OCI registry client (Phase 2.3)
+│   ├── userns/           # User namespace support (Phase 2.4)
+│   ├── capabilities/     # Capabilities management (Phase 1.2)
+│   ├── seccomp/          # Seccomp profiles (Phase 1.2)
+│   ├── security/         # LSM support (Phase 1.2)
 │   ├── logger/           # Structured logging (Phase 1.3)
 │   └── errors/           # Error handling with codes (Phase 1.3)
 ├── examples/             # Example programs
 ├── docs/                 # Documentation
 │   ├── ARCHITECTURE.md   # Detailed architecture guide
+│   ├── PHASE2.md         # Phase 2 feature documentation (NEW!)
 │   ├── LOGGING.md        # Logging guide (Phase 1.3)
-│   └── ERROR_HANDLING.md # Error handling guide (Phase 1.3)
+│   ├── ERROR_HANDLING.md # Error handling guide (Phase 1.3)
+│   ├── SECURITY.md       # Security guide (Phase 1.2)
+│   ├── TESTING.md        # Testing guide
+│   └── GETTING_STARTED.md # Getting started guide
 ├── Makefile             # Build automation
 └── README.md            # This file
 ```
