@@ -13,8 +13,8 @@ import (
 
 // images command
 var (
-	imagesAll    bool
-	imagesQuiet  bool
+	imagesAll     bool
+	imagesQuiet   bool
 	imagesNoTrunc bool
 )
 

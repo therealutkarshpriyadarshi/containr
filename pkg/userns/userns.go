@@ -24,9 +24,9 @@ type IDMap struct {
 
 // Config holds user namespace configuration
 type Config struct {
-	UIDMappings []IDMap // UID mappings
-	GIDMappings []IDMap // GID mappings
-	RootlessMode bool   // Enable rootless mode
+	UIDMappings  []IDMap // UID mappings
+	GIDMappings  []IDMap // GID mappings
+	RootlessMode bool    // Enable rootless mode
 }
 
 const (

@@ -34,45 +34,45 @@ type ContainerMetrics struct {
 
 // CPUStats holds CPU usage statistics
 type CPUStats struct {
-	UsageNanos     uint64  `json:"usage_nanos"`      // Total CPU time in nanoseconds
-	SystemNanos    uint64  `json:"system_nanos"`     // System CPU time
-	UserNanos      uint64  `json:"user_nanos"`       // User CPU time
-	PercentCPU     float64 `json:"percent_cpu"`      // CPU usage percentage
-	ThrottledTime  uint64  `json:"throttled_time"`   // Time throttled (nanoseconds)
-	ThrottledCount uint64  `json:"throttled_count"`  // Number of throttle periods
+	UsageNanos     uint64  `json:"usage_nanos"`     // Total CPU time in nanoseconds
+	SystemNanos    uint64  `json:"system_nanos"`    // System CPU time
+	UserNanos      uint64  `json:"user_nanos"`      // User CPU time
+	PercentCPU     float64 `json:"percent_cpu"`     // CPU usage percentage
+	ThrottledTime  uint64  `json:"throttled_time"`  // Time throttled (nanoseconds)
+	ThrottledCount uint64  `json:"throttled_count"` // Number of throttle periods
 }
 
 // MemoryStats holds memory usage statistics
 type MemoryStats struct {
-	Usage            uint64  `json:"usage"`              // Current memory usage (bytes)
-	MaxUsage         uint64  `json:"max_usage"`          // Maximum memory usage (bytes)
-	Limit            uint64  `json:"limit"`              // Memory limit (bytes)
-	Cache            uint64  `json:"cache"`              // Page cache memory (bytes)
-	RSS              uint64  `json:"rss"`                // Resident set size (bytes)
-	Swap             uint64  `json:"swap"`               // Swap usage (bytes)
-	PercentUsed      float64 `json:"percent_used"`       // Percentage of limit used
-	OOMKillDisabled  bool    `json:"oom_kill_disabled"`  // OOM killer disabled
-	OOMKillCount     uint64  `json:"oom_kill_count"`     // Number of OOM kills
+	Usage           uint64  `json:"usage"`             // Current memory usage (bytes)
+	MaxUsage        uint64  `json:"max_usage"`         // Maximum memory usage (bytes)
+	Limit           uint64  `json:"limit"`             // Memory limit (bytes)
+	Cache           uint64  `json:"cache"`             // Page cache memory (bytes)
+	RSS             uint64  `json:"rss"`               // Resident set size (bytes)
+	Swap            uint64  `json:"swap"`              // Swap usage (bytes)
+	PercentUsed     float64 `json:"percent_used"`      // Percentage of limit used
+	OOMKillDisabled bool    `json:"oom_kill_disabled"` // OOM killer disabled
+	OOMKillCount    uint64  `json:"oom_kill_count"`    // Number of OOM kills
 }
 
 // NetworkStats holds network I/O statistics
 type NetworkStats struct {
-	RxBytes   uint64 `json:"rx_bytes"`    // Received bytes
-	RxPackets uint64 `json:"rx_packets"`  // Received packets
-	RxErrors  uint64 `json:"rx_errors"`   // Receive errors
-	RxDropped uint64 `json:"rx_dropped"`  // Received packets dropped
-	TxBytes   uint64 `json:"tx_bytes"`    // Transmitted bytes
-	TxPackets uint64 `json:"tx_packets"`  // Transmitted packets
-	TxErrors  uint64 `json:"tx_errors"`   // Transmit errors
-	TxDropped uint64 `json:"tx_dropped"`  // Transmitted packets dropped
+	RxBytes   uint64 `json:"rx_bytes"`   // Received bytes
+	RxPackets uint64 `json:"rx_packets"` // Received packets
+	RxErrors  uint64 `json:"rx_errors"`  // Receive errors
+	RxDropped uint64 `json:"rx_dropped"` // Received packets dropped
+	TxBytes   uint64 `json:"tx_bytes"`   // Transmitted bytes
+	TxPackets uint64 `json:"tx_packets"` // Transmitted packets
+	TxErrors  uint64 `json:"tx_errors"`  // Transmit errors
+	TxDropped uint64 `json:"tx_dropped"` // Transmitted packets dropped
 }
 
 // DiskStats holds disk I/O statistics
 type DiskStats struct {
-	ReadBytes  uint64 `json:"read_bytes"`   // Bytes read
-	WriteBytes uint64 `json:"write_bytes"`  // Bytes written
-	ReadOps    uint64 `json:"read_ops"`     // Read operations
-	WriteOps   uint64 `json:"write_ops"`    // Write operations
+	ReadBytes  uint64 `json:"read_bytes"`  // Bytes read
+	WriteBytes uint64 `json:"write_bytes"` // Bytes written
+	ReadOps    uint64 `json:"read_ops"`    // Read operations
+	WriteOps   uint64 `json:"write_ops"`   // Write operations
 }
 
 // PIDStats holds PID statistics

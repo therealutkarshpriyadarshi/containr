@@ -7,14 +7,15 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/therealutkarshpriyadarshi/containr/pkg/container"
 	"github.com/therealutkarshpriyadarshi/containr/pkg/logger"
+	"github.com/therealutkarshpriyadarshi/containr/pkg/version"
 )
 
 var (
 	// Global flags
-	debugMode   bool
-	logLevel    string
-	stateDir    string
-	volumeDir   string
+	debugMode bool
+	logLevel  string
+	stateDir  string
+	volumeDir string
 )
 
 func main() {
@@ -115,19 +116,52 @@ func initLogger() {
 	logger.Debugf("Debug mode: %v, Log level: %s", debugMode, logLevel)
 }
 
+var (
+	versionShort bool
+	versionJSON  bool
+)
+
 var versionCmd = &cobra.Command{
 	Use:   "version",
-	Short: "Print the version number",
+	Short: "Print the version information",
+	Long:  `Display version information including build details and supported features.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("containr version 3.0.0 (Phase 3 Complete)")
-		fmt.Println("Phase 3 - Advanced Features:")
-		fmt.Println("- Enhanced networking (port mapping, network modes, DNS)")
-		fmt.Println("- Network management commands (create, ls, rm, inspect)")
-		fmt.Println("- Monitoring & observability (metrics, events API)")
-		fmt.Println("- Health checks and restart policies")
-		fmt.Println("- Basic Dockerfile parser foundation")
+		info := version.Get()
+
+		if versionJSON {
+			// Print JSON output
+			fmt.Printf(`{
+  "version": "%s",
+  "gitCommit": "%s",
+  "buildDate": "%s",
+  "goVersion": "%s",
+  "platform": "%s"
+}
+`, info.Version, info.GitCommit, info.BuildDate, info.GoVersion, info.Platform)
+			return
+		}
+
+		if versionShort {
+			fmt.Println(info.Short())
+			return
+		}
+
+		// Full version output
+		fmt.Println(info.String())
+		fmt.Println("\n🎉 Phase 4 Complete - Production Polish!")
+		fmt.Println("\nPhase 4 Features:")
+		fmt.Println("  ✅ Performance optimization (profiling, benchmarking)")
+		fmt.Println("  ✅ OCI runtime specification compliance")
+		fmt.Println("  ✅ Advanced documentation and tutorials")
+		fmt.Println("  ✅ Release automation and distribution")
 		fmt.Println("\nPrevious Phases:")
-		fmt.Println("- Phase 2: Enhanced CLI, volumes, registry, user namespaces")
-		fmt.Println("- Phase 1: Core features, security, error handling, logging")
+		fmt.Println("  Phase 3: Enhanced networking, monitoring, health checks")
+		fmt.Println("  Phase 2: Enhanced CLI, volumes, registry, user namespaces")
+		fmt.Println("  Phase 1: Core features, security, error handling, logging")
 	},
+}
+
+func init() {
+	versionCmd.Flags().BoolVarP(&versionShort, "short", "s", false, "Print short version")
+	versionCmd.Flags().BoolVar(&versionJSON, "json", false, "Print version in JSON format")
 }

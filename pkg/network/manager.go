@@ -15,23 +15,23 @@ import (
 
 // Network represents a container network
 type Network struct {
-	ID        string            `json:"id"`
-	Name      string            `json:"name"`
-	Driver    string            `json:"driver"`     // "bridge", "host", "none"
-	Subnet    string            `json:"subnet"`     // e.g., "172.16.0.0/24"
-	Gateway   string            `json:"gateway"`    // e.g., "172.16.0.1"
-	Bridge    string            `json:"bridge"`     // Bridge interface name
-	Created   time.Time         `json:"created"`
-	Labels    map[string]string `json:"labels"`
-	Options   map[string]string `json:"options"`
+	ID         string            `json:"id"`
+	Name       string            `json:"name"`
+	Driver     string            `json:"driver"`  // "bridge", "host", "none"
+	Subnet     string            `json:"subnet"`  // e.g., "172.16.0.0/24"
+	Gateway    string            `json:"gateway"` // e.g., "172.16.0.1"
+	Bridge     string            `json:"bridge"`  // Bridge interface name
+	Created    time.Time         `json:"created"`
+	Labels     map[string]string `json:"labels"`
+	Options    map[string]string `json:"options"`
 	Containers []string          `json:"containers"` // Container IDs using this network
 }
 
 // NetworkManager manages container networks
 type NetworkManager struct {
-	networks   map[string]*Network
-	stateDir   string
-	mu         sync.RWMutex
+	networks    map[string]*Network
+	stateDir    string
+	mu          sync.RWMutex
 	ipAllocator *IPAllocator
 }
 

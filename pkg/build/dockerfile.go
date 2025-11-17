@@ -11,11 +11,11 @@ import (
 
 // Instruction represents a Dockerfile instruction
 type Instruction struct {
-	Command   string   // FROM, RUN, COPY, etc.
-	Args      []string // Arguments to the command
-	RawLine   string   // Original line from Dockerfile
-	LineNum   int      // Line number in Dockerfile
-	Flags     map[string]string // Flags (e.g., --from for COPY)
+	Command string            // FROM, RUN, COPY, etc.
+	Args    []string          // Arguments to the command
+	RawLine string            // Original line from Dockerfile
+	LineNum int               // Line number in Dockerfile
+	Flags   map[string]string // Flags (e.g., --from for COPY)
 }
 
 // Dockerfile represents a parsed Dockerfile

@@ -40,10 +40,10 @@ type ImageConfig struct {
 
 // Manifest represents an image manifest (simplified OCI format)
 type Manifest struct {
-	SchemaVersion int            `json:"schemaVersion"`
-	MediaType     string         `json:"mediaType"`
-	Config        Descriptor     `json:"config"`
-	Layers        []Descriptor   `json:"layers"`
+	SchemaVersion int               `json:"schemaVersion"`
+	MediaType     string            `json:"mediaType"`
+	Config        Descriptor        `json:"config"`
+	Layers        []Descriptor      `json:"layers"`
 	Annotations   map[string]string `json:"annotations"`
 }
 

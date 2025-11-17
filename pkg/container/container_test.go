@@ -12,15 +12,15 @@ import (
 
 func TestNew(t *testing.T) {
 	tests := []struct {
-		name           string
-		config         *Config
-		expectIsolate  bool
-		expectedNsLen  int
-		containsUTS    bool
-		containsPID    bool
-		containsMount  bool
-		containsIPC    bool
-		containsNet    bool
+		name          string
+		config        *Config
+		expectIsolate bool
+		expectedNsLen int
+		containsUTS   bool
+		containsPID   bool
+		containsMount bool
+		containsIPC   bool
+		containsNet   bool
 	}{
 		{
 			name: "Basic container without isolation",

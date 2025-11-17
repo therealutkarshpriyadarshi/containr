@@ -37,10 +37,10 @@ func New(config *Config) (*Cgroup, error) {
 	}
 
 	log.WithFields(map[string]interface{}{
-		"cgroup_name": config.Name,
+		"cgroup_name":  config.Name,
 		"memory_limit": config.MemoryLimit,
-		"cpu_shares": config.CPUShares,
-		"pid_limit": config.PIDLimit,
+		"cpu_shares":   config.CPUShares,
+		"pid_limit":    config.PIDLimit,
 	}).Debug("Cgroup configuration")
 
 	// Create cgroup directories for each controller
@@ -117,7 +117,7 @@ func (c *Cgroup) applyLimits(config *Config) error {
 func (c *Cgroup) AddProcess(pid int) error {
 	log.WithFields(map[string]interface{}{
 		"cgroup_name": c.Name,
-		"pid": pid,
+		"pid":         pid,
 	}).Debug("Adding process to cgroup")
 
 	controllers := []string{"memory", "cpu", "pids"}
@@ -130,8 +130,8 @@ func (c *Cgroup) AddProcess(pid int) error {
 			if err := writeFile(procsPath, strconv.Itoa(pid)); err != nil {
 				log.WithError(err).WithFields(map[string]interface{}{
 					"cgroup_name": c.Name,
-					"pid": pid,
-					"controller": controller,
+					"pid":         pid,
+					"controller":  controller,
 				}).Error("Failed to add process to cgroup")
 				return errors.Wrap(errors.ErrCgroupAddProcess, "failed to add process to cgroup", err).
 					WithField("cgroup_name", c.Name).
@@ -143,7 +143,7 @@ func (c *Cgroup) AddProcess(pid int) error {
 
 	log.WithFields(map[string]interface{}{
 		"cgroup_name": c.Name,
-		"pid": pid,
+		"pid":         pid,
 	}).Info("Process added to cgroup successfully")
 	return nil
 }

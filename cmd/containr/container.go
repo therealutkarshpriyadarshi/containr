@@ -176,8 +176,8 @@ func init() {
 
 // ps command
 var (
-	psAll    bool
-	psQuiet  bool
+	psAll     bool
+	psQuiet   bool
 	psNoTrunc bool
 )
 

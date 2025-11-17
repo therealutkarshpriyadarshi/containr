@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/therealutkarshpriyadarshi/containr/pkg/container"
 	"github.com/therealutkarshpriyadarshi/containr/pkg/cgroup"
+	"github.com/therealutkarshpriyadarshi/containr/pkg/container"
 )
 
 // Simple example demonstrating container creation with resource limits
@@ -20,8 +20,8 @@ func main() {
 	cgConfig := &cgroup.Config{
 		Name:        "example-container",
 		MemoryLimit: 100 * 1024 * 1024, // 100 MB
-		CPUShares:   512,                // Half of default CPU shares
-		PIDLimit:    100,                // Max 100 processes
+		CPUShares:   512,               // Half of default CPU shares
+		PIDLimit:    100,               // Max 100 processes
 	}
 
 	cg, err := cgroup.New(cgConfig)
