@@ -39,3 +39,5 @@ Thumbs.db
 *.coverprofile
 coverage.txt
 coverage.html
+coverage.out
+coverage/
