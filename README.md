@@ -1,2 +1,391 @@
-# containr
-Build process isolation from scratch using Linux primitives.
+# Containr 🚀
+
+A minimal container runtime built from scratch using Linux primitives. This project demonstrates the core concepts behind Docker and other container runtimes by implementing process isolation using namespaces, resource limits with cgroups, and filesystem isolation.
+
+## Features
+
+- ✅ **Namespace Isolation**: UTS, PID, Mount, IPC, Network namespaces
+- ✅ **Resource Limits**: CPU, memory, and PID limits using cgroups
+- ✅ **Filesystem Isolation**: Chroot, pivot_root, and overlay filesystems
+- ✅ **Network Isolation**: Virtual ethernet pairs and bridge networking
+- ✅ **Image Management**: Import/export container images
+- ✅ **Simple CLI**: Easy-to-use command-line interface
+
+## Why Build This?
+
+Understanding containers from first principles helps developers:
+- Grasp how Docker and Kubernetes work under the hood
+- Debug container issues more effectively
+- Build custom container solutions
+- Learn Linux kernel features
+
+## Architecture
+
+```
+┌─────────────────────────────────────────────────────┐
+│                   Container Runtime                 │
+├─────────────────────────────────────────────────────┤
+│                                                     │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐         │
+│  │Namespaces│  │ Cgroups  │  │  RootFS  │         │
+│  └──────────┘  └──────────┘  └──────────┘         │
+│                                                     │
+│  ┌──────────┐  ┌──────────┐  ┌──────────┐         │
+│  │ Network  │  │  Image   │  │Container │         │
+│  └──────────┘  └──────────┘  └──────────┘         │
+│                                                     │
+└─────────────────────────────────────────────────────┘
+                      ▼
+        ┌────────────────────────┐
+        │   Linux Kernel         │
+        │  (Syscalls, cgroups,   │
+        │   namespaces, etc.)    │
+        └────────────────────────┘
+```
+
+## Requirements
+
+- **OS**: Linux (kernel 3.8+)
+- **Go**: 1.16 or later
+- **Privileges**: Root access (for namespace and cgroup operations)
+- **Optional**: Docker or debootstrap for creating root filesystems
+
+## Installation
+
+### Build from Source
+
+```bash
+# Clone the repository
+git clone https://github.com/therealutkarshpriyadarshi/containr.git
+cd containr
+
+# Build the binary
+make build
+
+# Install system-wide (optional)
+sudo make install
+```
+
+The binary will be available at `bin/containr` or `/usr/local/bin/containr` after installation.
+
+## Quick Start
+
+### Basic Usage
+
+```bash
+# Run a simple command in an isolated container
+sudo ./bin/containr run /bin/echo "Hello from container!"
+
+# Run an interactive shell
+sudo ./bin/containr run /bin/sh
+
+# Run a command with custom hostname
+sudo ./bin/containr run /bin/bash -c "hostname"
+```
+
+### With Resource Limits
+
+```bash
+# Run with resource limits (see examples/simple.go)
+sudo make run-example
+```
+
+## Project Structure
+
+```
+containr/
+├── cmd/
+│   └── containr/          # Main CLI application
+├── pkg/
+│   ├── container/         # Container creation and management
+│   ├── namespace/         # Namespace handling (UTS, PID, Mount, etc.)
+│   ├── cgroup/           # Cgroup resource limits
+│   ├── rootfs/           # Filesystem operations (overlay, pivot_root)
+│   ├── network/          # Network setup (veth, bridges)
+│   └── image/            # Image import/export
+├── examples/             # Example programs
+├── docs/                 # Documentation
+│   └── ARCHITECTURE.md   # Detailed architecture guide
+├── Makefile             # Build automation
+└── README.md            # This file
+```
+
+## How It Works
+
+### 1. Namespaces - Process Isolation
+
+Namespaces create isolated views of system resources:
+
+```go
+// Create process with isolated namespaces
+cmd.SysProcAttr = &syscall.SysProcAttr{
+    Cloneflags: syscall.CLONE_NEWUTS |  // Hostname
+                syscall.CLONE_NEWPID |  // Process IDs
+                syscall.CLONE_NEWNS |   // Mount points
+                syscall.CLONE_NEWIPC |  // IPC resources
+                syscall.CLONE_NEWNET,   // Network stack
+}
+```
+
+**See it in action:**
+```bash
+# Process inside container sees isolated PID namespace
+sudo ./bin/containr run /bin/sh -c "ps aux"
+# Only shows processes inside the container!
+```
+
+### 2. Cgroups - Resource Limits
+
+Control groups enforce resource constraints:
+
+```go
+// Set memory limit to 100MB
+cgroup.Config{
+    Name:        "mycontainer",
+    MemoryLimit: 100 * 1024 * 1024,
+    CPUShares:   512,
+    PIDLimit:    100,
+}
+```
+
+### 3. Filesystem Isolation
+
+Multiple techniques for isolating filesystems:
+
+- **Chroot**: Basic directory isolation
+- **Pivot Root**: Change root mount point
+- **Overlay FS**: Layered, copy-on-write filesystem
+
+```
+┌─────────────────────────────────┐
+│     Overlay Filesystem          │
+├─────────────────────────────────┤
+│  Upper (writable)               │
+│  ├── /etc/hostname (modified)   │
+│  └── /app/data (new)            │
+├─────────────────────────────────┤
+│  Lower (read-only base layers)  │
+│  ├── Layer 3: App files         │
+│  ├── Layer 2: Dependencies      │
+│  └── Layer 1: Base OS           │
+└─────────────────────────────────┘
+```
+
+### 4. Network Isolation
+
+Virtual ethernet pairs connect containers to host network:
+
+```
+Host                     Container
+┌─────────┐             ┌─────────┐
+│ bridge0 │◄───veth────►│  eth0   │
+└────┬────┘             └─────────┘
+     │
+     ▼
+  Internet
+```
+
+## Examples
+
+### Example 1: Basic Container
+
+```go
+import "github.com/therealutkarshpriyadarshi/containr/pkg/container"
+
+config := &container.Config{
+    Command:  []string{"/bin/sh"},
+    Hostname: "mycontainer",
+    Isolate:  true,
+}
+
+c := container.New(config)
+c.RunWithSetup()
+```
+
+### Example 2: With Resource Limits
+
+```go
+import (
+    "github.com/therealutkarshpriyadarshi/containr/pkg/container"
+    "github.com/therealutkarshpriyadarshi/containr/pkg/cgroup"
+)
+
+// Create cgroup with limits
+cg, _ := cgroup.New(&cgroup.Config{
+    Name:        "limited-container",
+    MemoryLimit: 50 * 1024 * 1024,  // 50MB
+    CPUShares:   256,                // 1/4 of CPU
+})
+defer cg.Remove()
+
+cg.AddCurrentProcess()
+
+// Run container
+c := container.New(&container.Config{
+    Command: []string{"/bin/sh"},
+})
+c.RunWithSetup()
+```
+
+### Example 3: Import and Run Image
+
+```go
+import "github.com/therealutkarshpriyadarshi/containr/pkg/image"
+
+// Import a rootfs tarball
+img, _ := image.Import("/path/to/rootfs.tar.gz", "myimage", "latest")
+
+// Use in container
+config := &container.Config{
+    RootFS:  img.GetRootFS(),
+    Command: []string{"/bin/sh"},
+}
+```
+
+## API Reference
+
+### Namespace Package
+
+```go
+// Get namespace flags for multiple types
+flags := namespace.GetNamespaceFlags(
+    namespace.UTS,
+    namespace.PID,
+    namespace.Mount,
+)
+
+// Create isolated process
+config := &namespace.Config{
+    Flags:   flags,
+    Command: "/bin/sh",
+    Args:    []string{},
+}
+namespace.CreateNamespaces(config)
+```
+
+### Cgroup Package
+
+```go
+// Create cgroup
+cg, err := cgroup.New(&cgroup.Config{
+    Name:        "container-1",
+    MemoryLimit: 100 * 1024 * 1024,
+    CPUShares:   512,
+    PIDLimit:    50,
+})
+
+// Add process
+cg.AddProcess(pid)
+
+// Get statistics
+stats, _ := cg.GetStats()
+fmt.Printf("Memory usage: %d bytes\n", stats.MemoryUsage)
+
+// Cleanup
+cg.Remove()
+```
+
+### RootFS Package
+
+```go
+// Setup overlay filesystem
+rootfs := rootfs.New(&rootfs.Config{
+    MountPoint: "/tmp/container/root",
+    Layers: []string{
+        "/layers/base",
+        "/layers/app",
+    },
+})
+
+rootfs.Setup()
+rootfs.PivotRoot()
+defer rootfs.Teardown()
+```
+
+## Learning Path
+
+1. **Start Simple**: Run basic commands with namespace isolation
+2. **Add Resources**: Experiment with cgroup limits
+3. **Filesystem**: Try different root filesystem configurations
+4. **Networking**: Set up network isolation and bridges
+5. **Images**: Import and manage container images
+
+## Troubleshooting
+
+### "Operation not permitted"
+
+You need root privileges:
+```bash
+sudo ./bin/containr run /bin/sh
+```
+
+### Cgroups not working
+
+Check if cgroups v2 is enabled:
+```bash
+mount | grep cgroup
+# Should show /sys/fs/cgroup
+```
+
+### Network issues
+
+Ensure you have CAP_NET_ADMIN capability:
+```bash
+sudo ./bin/containr run /bin/sh
+```
+
+## Comparison with Docker
+
+| Feature | Containr | Docker |
+|---------|----------|--------|
+| **Purpose** | Educational | Production |
+| **Namespaces** | Basic support | Full support |
+| **Cgroups** | Basic limits | Advanced limits |
+| **Images** | Simple import/export | Registry, layers |
+| **Networking** | Basic isolation | Advanced (overlay, macvlan) |
+| **Security** | Basic | Seccomp, AppArmor, SELinux |
+| **Orchestration** | None | Swarm, Kubernetes |
+
+## Further Reading
+
+- 📖 [Architecture Documentation](docs/ARCHITECTURE.md)
+- 🔧 [Linux Namespaces Man Page](https://man7.org/linux/man-pages/man7/namespaces.7.html)
+- 📚 [Cgroups Documentation](https://www.kernel.org/doc/Documentation/cgroup-v2.txt)
+- 🐋 [OCI Runtime Spec](https://github.com/opencontainers/runtime-spec)
+
+## Contributing
+
+Contributions are welcome! Areas for improvement:
+
+- [ ] User namespace support for rootless containers
+- [ ] Seccomp profiles for syscall filtering
+- [ ] Volume management
+- [ ] Image registry support (pull/push)
+- [ ] Container networking improvements
+- [ ] Logging and monitoring
+- [ ] Better error handling
+- [ ] Unit tests
+
+## License
+
+MIT License - feel free to use this for learning and education.
+
+## Acknowledgments
+
+Inspired by:
+- Docker and containerd
+- Linux kernel developers
+- ["Containers from Scratch"](https://ericchiang.github.io/post/containers-from-scratch/) by Eric Chiang
+- runc and the OCI runtime specification
+
+---
+
+**Note**: This is an educational project. For production use, consider established runtimes like Docker, containerd, or CRI-O.
+
+## Getting Help
+
+- 📖 Read the [architecture docs](docs/ARCHITECTURE.md)
+- 🐛 [Open an issue](https://github.com/therealutkarshpriyadarshi/containr/issues)
+- 💬 Check existing issues for solutions
+
+**Happy containerizing! 🎉**
