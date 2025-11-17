@@ -88,6 +88,12 @@ func init() {
 	rootCmd.AddCommand(networkCmd)
 	rootCmd.AddCommand(eventsCmd)
 	rootCmd.AddCommand(versionCmd)
+	// Phase 6 commands
+	rootCmd.AddCommand(criCmd)
+	rootCmd.AddCommand(pluginCmd)
+	rootCmd.AddCommand(snapshotCmd)
+	rootCmd.AddCommand(buildCmd)
+	rootCmd.AddCommand(buildxCmd)
 }
 
 // initLogger initializes the logger with the specified settings
@@ -148,13 +154,15 @@ var versionCmd = &cobra.Command{
 
 		// Full version output
 		fmt.Println(info.String())
-		fmt.Println("\n🎉 Phase 4 Complete - Production Polish!")
-		fmt.Println("\nPhase 4 Features:")
-		fmt.Println("  ✅ Performance optimization (profiling, benchmarking)")
-		fmt.Println("  ✅ OCI runtime specification compliance")
-		fmt.Println("  ✅ Advanced documentation and tutorials")
-		fmt.Println("  ✅ Release automation and distribution")
+		fmt.Println("\n🎉 Phase 6 Complete - Cloud-Native Integration!")
+		fmt.Println("\nPhase 6 Features:")
+		fmt.Println("  ✅ CRI (Container Runtime Interface) for Kubernetes")
+		fmt.Println("  ✅ Plugin system for extensibility")
+		fmt.Println("  ✅ Snapshot support for fast container operations")
+		fmt.Println("  ✅ Complete build engine with Dockerfile support")
 		fmt.Println("\nPrevious Phases:")
+		fmt.Println("  Phase 5: Community building and growth")
+		fmt.Println("  Phase 4: Performance optimization and production polish")
 		fmt.Println("  Phase 3: Enhanced networking, monitoring, health checks")
 		fmt.Println("  Phase 2: Enhanced CLI, volumes, registry, user namespaces")
 		fmt.Println("  Phase 1: Core features, security, error handling, logging")
