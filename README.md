@@ -2,11 +2,34 @@
 
 A minimal container runtime built from scratch using Linux primitives. This project demonstrates the core concepts behind Docker and other container runtimes by implementing process isolation using namespaces, resource limits with cgroups, and filesystem isolation.
 
-**🎉 Phase 5 Complete - Community & Growth!** Containr is now a fully mature, community-driven educational platform with comprehensive governance, sustainability infrastructure, and thriving community. All five phases complete!
+**🚀 Phase 6 Complete - Cloud-Native Integration!** Containr now features CRI support for Kubernetes, extensible plugin system, snapshot capabilities, and complete image build engine. All six phases complete!
 
 ## Features
 
-### 🌱 Phase 5: Community & Growth (NEW!)
+### ☁️ Phase 6: Cloud-Native Integration & Advanced Runtime (NEW!)
+- ✅ **CRI (Container Runtime Interface)**: Kubernetes integration
+  - **RuntimeService**: Pod sandbox and container lifecycle management
+  - **ImageService**: Image pull, list, and remove operations
+  - **Pod Support**: Full Kubernetes pod abstraction
+  - **Metrics Integration**: Container metrics via CRI API
+- ✅ **Plugin System**: Extensible architecture for custom functionality
+  - **Plugin Types**: Runtime, network, storage, logging, metrics plugins
+  - **Dynamic Loading**: Load plugins at runtime
+  - **Plugin Management**: Enable, disable, configure plugins
+  - **Built-in Plugins**: Example plugins for common use cases
+- ✅ **Snapshot Support**: Fast container creation and migration
+  - **Multiple Drivers**: Overlay2, Btrfs, ZFS snapshot drivers
+  - **Copy-on-Write**: Efficient storage with CoW optimization
+  - **Snapshot Chain**: Parent-child snapshot relationships
+  - **Metadata Management**: Snapshot info and labels
+- ✅ **Complete Build Engine**: Full Dockerfile build implementation
+  - **All Instructions**: Support for all Dockerfile instructions
+  - **Multi-stage Builds**: Build stage targeting and optimization
+  - **Build Cache**: Layer caching with smart invalidation
+  - **Build Context**: Efficient context handling and hashing
+  - **Build Arguments**: Dynamic build-time variables
+
+### 🌱 Phase 5: Community & Growth
 - ✅ **Community Building**: Vibrant and inclusive community
   - **Community Health**: Code of Conduct, Contributing Guide, Support docs
   - **Governance Model**: BDFL with path to community governance
@@ -729,7 +752,8 @@ For more troubleshooting help, see:
 ## Further Reading
 
 ### Containr Documentation
-- 🌱 [Phase 5 Documentation](docs/PHASE5.md) - Community & growth guide (Phase 5) **NEW!**
+- ☁️ [Phase 6 Documentation](docs/PHASE6.md) - Cloud-native integration guide (Phase 6) **NEW!**
+- 🌱 [Phase 5 Documentation](docs/PHASE5.md) - Community & growth guide (Phase 5)
 - 🎯 [Phase 4 Documentation](docs/PHASE4.md) - Production polish guide (Phase 4)
 - 🤝 [Contributing Guide](CONTRIBUTING.md) - How to contribute
 - 🚀 [Phase 3 Documentation](docs/PHASE3.md) - Advanced features guide (Phase 3)
