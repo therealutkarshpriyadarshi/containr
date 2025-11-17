@@ -7,6 +7,115 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2025-11-17
+
+### Phase 6: Cloud-Native Integration & Advanced Runtime
+
+#### Added - CRI (Container Runtime Interface)
+- **CRI Service** (`pkg/cri`)
+  - RuntimeService implementation for pod and container lifecycle
+  - ImageService implementation for image operations
+  - Pod sandbox support with full Kubernetes abstraction
+  - Container creation, start, stop, and removal via CRI
+  - Image pull, list, and remove operations
+  - Filesystem usage reporting
+- **CRI API Support**
+  - Pod sandbox configuration and status
+  - Container configuration with Linux-specific options
+  - Security context support (capabilities, seccomp, AppArmor)
+  - Resource limits (CPU, memory) via CRI
+  - Mount and device configuration
+  - Network and namespace options
+
+#### Added - Plugin System
+- **Plugin Framework** (`pkg/plugin`)
+  - Plugin interface with lifecycle management
+  - Plugin types: runtime, network, storage, logging, metrics
+  - Plugin manager with enable/disable/configure capabilities
+  - BasePlugin implementation for common functionality
+  - Plugin health checking
+  - Dynamic plugin configuration
+- **Plugin Management**
+  - Plugin registration and unregistration
+  - Filter plugins by type
+  - Plugin metadata and versioning
+  - Thread-safe plugin operations
+
+#### Added - Snapshot Support
+- **Snapshot Interface** (`pkg/snapshot`)
+  - Snapshotter interface for multiple drivers
+  - Snapshot types: active, committed, view
+  - Snapshot metadata management
+  - Snapshot lifecycle (prepare, commit, remove)
+  - Snapshot walking and filtering
+  - Storage usage tracking
+- **Overlay2 Driver**
+  - Overlay2 filesystem snapshotter implementation
+  - Parent-child snapshot relationships
+  - Copy-on-write optimization
+  - Snapshot export and import capabilities
+  - Metadata persistence
+  - Size calculation and reporting
+- **Snapshot Operations**
+  - Create active snapshots from parent
+  - Commit active snapshots to immutable state
+  - Create read-only views of snapshots
+  - Update snapshot labels and metadata
+  - Calculate and report snapshot usage
+
+#### Added - Complete Build Engine
+- **Builder Package** (`pkg/build`)
+  - Complete Dockerfile build implementation
+  - BuildContext with file hashing and indexing
+  - Multi-stage build support
+  - Build cache with intelligent invalidation
+  - Layer generation and management
+  - OCI image manifest generation
+- **Build Features**
+  - Support for all Dockerfile instructions (FROM, RUN, COPY, ADD, ENV, etc.)
+  - Build argument substitution
+  - Build context hashing for cache keys
+  - Layer-by-layer execution with caching
+  - Target stage selection for multi-stage builds
+  - Build configuration (tags, args, platforms)
+- **Build Cache**
+  - Cache key generation from parent, instruction, and context
+  - Cache lookup and storage
+  - Cache pruning by age
+  - Per-instruction caching
+  - Build context-aware cache invalidation
+
+#### Added - Documentation
+- **Phase 6 Documentation** (`docs/PHASE6.md`)
+  - CRI implementation guide
+  - Plugin development guide
+  - Snapshot usage and driver documentation
+  - Build engine architecture and usage
+  - Security considerations for Phase 6 features
+  - Examples and tutorials for all features
+
+#### Added - Tests
+- **CRI Tests** (`pkg/cri/cri_test.go`)
+  - Pod sandbox lifecycle tests
+  - Container lifecycle tests
+  - Image service tests
+  - Filter and list operation tests
+- **Plugin Tests** (`pkg/plugin/plugin_test.go`)
+  - Plugin registration and lifecycle tests
+  - Plugin manager tests
+  - Concurrent plugin operation tests
+  - Health check tests
+- **Snapshot Tests** (`pkg/snapshot/snapshot_test.go`)
+  - Overlay2 driver tests
+  - Snapshot lifecycle tests
+  - Parent chain tests
+  - Metadata persistence tests
+- **Builder Tests** (`pkg/build/builder_test.go`)
+  - Build context tests
+  - Build cache tests
+  - Multi-stage build tests
+  - Layer generation tests
+
 ### Phase 5: Community & Growth
 - Community health files and governance
 - Educational resources and examples
