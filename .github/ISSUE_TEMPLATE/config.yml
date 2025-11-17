@@ -1,0 +1,14 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 GitHub Discussions
+    url: https://github.com/therealutkarshpriyadarshi/containr/discussions
+    about: Ask questions and discuss ideas with the community
+  - name: 📖 Documentation
+    url: https://github.com/therealutkarshpriyadarshi/containr/tree/main/docs
+    about: Read the comprehensive documentation
+  - name: 🔒 Security Vulnerability
+    url: https://github.com/therealutkarshpriyadarshi/containr/security
+    about: Report security vulnerabilities privately
+  - name: 💡 Feature Ideas
+    url: https://github.com/therealutkarshpriyadarshi/containr/discussions/categories/ideas
+    about: Share and discuss feature ideas

@@ -2,11 +2,33 @@
 
 A minimal container runtime built from scratch using Linux primitives. This project demonstrates the core concepts behind Docker and other container runtimes by implementing process isolation using namespaces, resource limits with cgroups, and filesystem isolation.
 
-**🎉 Phase 4 Complete - Production Polish!** Containr is now production-ready with performance optimization, OCI runtime compliance, comprehensive documentation, and automated release processes. All four phases complete!
+**🎉 Phase 5 Complete - Community & Growth!** Containr is now a fully mature, community-driven educational platform with comprehensive governance, sustainability infrastructure, and thriving community. All five phases complete!
 
 ## Features
 
-### 🎯 Phase 4: Production Polish (NEW!)
+### 🌱 Phase 5: Community & Growth (NEW!)
+- ✅ **Community Building**: Vibrant and inclusive community
+  - **Community Health**: Code of Conduct, Contributing Guide, Support docs
+  - **Governance Model**: BDFL with path to community governance
+  - **Recognition**: Contributor recognition and mentorship programs
+  - **Communication**: GitHub Discussions, Issue templates, PR templates
+- ✅ **Educational Partnerships**: Learning platform for students and educators
+  - **Course Materials**: University course integration ready
+  - **Tutorials**: Comprehensive step-by-step tutorials
+  - **Documentation**: Complete educational documentation
+  - **Examples**: Real-world examples and use cases
+- ✅ **Sustainability**: Long-term project sustainability
+  - **Security Policy**: Vulnerability reporting and patch process
+  - **Maintainer Guide**: Clear maintainer roles and responsibilities
+  - **Funding Infrastructure**: GitHub Sponsors and Open Collective ready
+  - **Dependency Management**: Automated security updates
+- ✅ **Project Management**: Professional project management
+  - **Changelog**: Keep a Changelog compliant version history
+  - **Release Process**: Semantic versioning and release automation
+  - **Issue Templates**: Bug reports, feature requests, questions
+  - **PR Templates**: Comprehensive pull request templates
+
+### 🎯 Phase 4: Production Polish
 - ✅ **Performance Optimization**: Production-ready performance tools
   - **Benchmarking**: Comprehensive benchmark suite for all operations
   - **Profiling**: CPU, memory, and execution trace profiling
@@ -707,8 +729,9 @@ For more troubleshooting help, see:
 ## Further Reading
 
 ### Containr Documentation
-- 🎯 [Phase 4 Documentation](docs/PHASE4.md) - Production polish guide (Phase 4) **NEW!**
-- 🤝 [Contributing Guide](CONTRIBUTING.md) - How to contribute **NEW!**
+- 🌱 [Phase 5 Documentation](docs/PHASE5.md) - Community & growth guide (Phase 5) **NEW!**
+- 🎯 [Phase 4 Documentation](docs/PHASE4.md) - Production polish guide (Phase 4)
+- 🤝 [Contributing Guide](CONTRIBUTING.md) - How to contribute
 - 🚀 [Phase 3 Documentation](docs/PHASE3.md) - Advanced features guide (Phase 3)
 - 📦 [Phase 2 Documentation](docs/PHASE2.md) - Feature completeness guide (Phase 2)
 - 📖 [Architecture Documentation](docs/ARCHITECTURE.md) - Detailed architecture overview
@@ -725,7 +748,17 @@ For more troubleshooting help, see:
 
 ## Contributing
 
-Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
+Contributions are welcome! We have a vibrant community and comprehensive guidelines to help you get started.
+
+### Quick Links
+
+- 📖 [Contributing Guide](CONTRIBUTING.md) - How to contribute
+- 💬 [GitHub Discussions](https://github.com/therealutkarshpriyadarshi/containr/discussions) - Ask questions
+- 🐛 [Issue Tracker](https://github.com/therealutkarshpriyadarshi/containr/issues) - Report bugs
+- 📚 [Tutorial](docs/tutorials/01-community-contribution.md) - First contribution guide
+- 📋 [Code of Conduct](CODE_OF_CONDUCT.md) - Community guidelines
+- 🏛️ [Governance](GOVERNANCE.md) - How we make decisions
+- 🙋 [Support](SUPPORT.md) - Getting help
 
 ### Quick Start for Contributors
 
@@ -751,13 +784,16 @@ make lint
 make pre-commit
 ```
 
-### Areas for Enhancement
+### Future Enhancements
+
+While all 5 phases are complete, potential future improvements include:
 
 - [ ] CRI (Container Runtime Interface) support
-- [ ] BuildKit integration
-- [ ] Multi-platform binary support
-- [ ] Enhanced metrics (Prometheus/Grafana)
+- [ ] BuildKit integration for advanced builds
+- [ ] Enhanced metrics (Prometheus/Grafana integration)
 - [ ] Performance optimizations for extreme scale
+- [ ] Windows container support (educational)
+- [ ] Advanced orchestration features
 
 ## License
 
