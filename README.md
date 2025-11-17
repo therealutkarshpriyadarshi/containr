@@ -2,11 +2,34 @@
 
 A minimal container runtime built from scratch using Linux primitives. This project demonstrates the core concepts behind Docker and other container runtimes by implementing process isolation using namespaces, resource limits with cgroups, and filesystem isolation.
 
-**🎉 Phase 2 Complete!** Containr now features a full Docker-like CLI with volume management, registry integration, and rootless container support.
+**🎉 Phase 3 Complete!** Containr now includes advanced networking with port mapping, comprehensive monitoring & observability, health checks, restart policies, and build foundations.
 
 ## Features
 
-### ✨ Phase 2: Feature Completeness (NEW!)
+### 🚀 Phase 3: Advanced Features (NEW!)
+- ✅ **Enhanced Networking**: Production-ready networking capabilities
+  - **Port Mapping**: TCP/UDP port exposure with iptables integration
+  - **Network Modes**: Bridge, host, none, and container sharing
+  - **DNS Resolution**: Automatic DNS configuration and hostname resolution
+  - **Network Commands**: `network create`, `ls`, `rm`, `inspect`
+- ✅ **Monitoring & Observability**: Comprehensive metrics and events
+  - **Metrics Collection**: CPU, memory, network, disk I/O, and PID statistics
+  - **Events API**: Container lifecycle event tracking and streaming
+  - **Events Command**: Query and filter events by time and type
+- ✅ **Health Checks**: Container health monitoring
+  - **Configurable Checks**: Command-based health verification
+  - **Health Status**: Track healthy, unhealthy, and starting states
+  - **Health Events**: Automatic event emission on status changes
+- ✅ **Restart Policies**: Automatic container restart
+  - **Multiple Policies**: no, always, on-failure, unless-stopped
+  - **Exponential Backoff**: Smart restart delays with configurable backoff
+  - **Max Retries**: Limit restart attempts
+- ✅ **Build Foundation**: Dockerfile parsing infrastructure
+  - **Dockerfile Parser**: Parse standard Dockerfile syntax
+  - **Multi-stage Support**: Build stage tracking and management
+  - **Build Arguments**: ARG instruction support
+
+### ✨ Phase 2: Feature Completeness
 - ✅ **Enhanced CLI**: Docker-like commands with Cobra framework
   - **Container Lifecycle**: `run`, `create`, `start`, `stop`, `rm`, `ps`, `logs`, `exec`
   - **Image Management**: `pull`, `images`, `rmi`, `import`, `export`
@@ -99,6 +122,25 @@ The binary will be available at `bin/containr` or `/usr/local/bin/containr` afte
 
 ## Quick Start
 
+### Phase 3: Advanced Features
+
+```bash
+# Create a custom network
+sudo ./bin/containr network create --subnet 172.30.0.0/24 mynetwork
+
+# Run container with port mapping
+sudo ./bin/containr run -p 8080:80 --name web nginx
+
+# View container events
+sudo ./bin/containr events
+
+# List networks
+sudo ./bin/containr network ls
+
+# Inspect network
+sudo ./bin/containr network inspect mynetwork
+```
+
 ### Phase 2: Enhanced Features
 
 ```bash
@@ -189,12 +231,17 @@ containr/
 │   ├── namespace/         # Namespace handling (UTS, PID, Mount, User, etc.)
 │   ├── cgroup/           # Cgroup resource limits
 │   ├── rootfs/           # Filesystem operations (overlay, pivot_root)
-│   ├── network/          # Network setup (veth, bridges)
+│   ├── network/          # Network setup (veth, bridges, port mapping, modes) (Phase 3)
 │   ├── image/            # Image import/export
 │   ├── state/            # Container state persistence (Phase 2.1)
 │   ├── volume/           # Volume management (Phase 2.2)
 │   ├── registry/         # OCI registry client (Phase 2.3)
 │   ├── userns/           # User namespace support (Phase 2.4)
+│   ├── metrics/          # Metrics collection and monitoring (Phase 3.3)
+│   ├── events/           # Event tracking and streaming (Phase 3.3)
+│   ├── health/           # Health check monitoring (Phase 3.2)
+│   ├── restart/          # Restart policy management (Phase 3.2)
+│   ├── build/            # Dockerfile parser (Phase 3.4)
 │   ├── capabilities/     # Capabilities management (Phase 1.2)
 │   ├── seccomp/          # Seccomp profiles (Phase 1.2)
 │   ├── security/         # LSM support (Phase 1.2)
@@ -203,7 +250,8 @@ containr/
 ├── examples/             # Example programs
 ├── docs/                 # Documentation
 │   ├── ARCHITECTURE.md   # Detailed architecture guide
-│   ├── PHASE2.md         # Phase 2 feature documentation (NEW!)
+│   ├── PHASE3.md         # Phase 3 feature documentation (NEW!)
+│   ├── PHASE2.md         # Phase 2 feature documentation
 │   ├── LOGGING.md        # Logging guide (Phase 1.3)
 │   ├── ERROR_HANDLING.md # Error handling guide (Phase 1.3)
 │   ├── SECURITY.md       # Security guide (Phase 1.2)
@@ -573,6 +621,8 @@ For more troubleshooting help, see:
 
 ### Containr Documentation
 - 📖 [Architecture Documentation](docs/ARCHITECTURE.md) - Detailed architecture overview
+- 🚀 [Phase 3 Documentation](docs/PHASE3.md) - Advanced features guide (Phase 3)
+- 📦 [Phase 2 Documentation](docs/PHASE2.md) - Feature completeness guide (Phase 2)
 - 🔒 [Security Guide](docs/SECURITY.md) - Comprehensive security documentation
 - 📝 [Logging Guide](docs/LOGGING.md) - Structured logging and debug mode (Phase 1.3)
 - ⚠️ [Error Handling Guide](docs/ERROR_HANDLING.md) - Error codes and best practices (Phase 1.3)

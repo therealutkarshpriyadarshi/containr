@@ -84,6 +84,8 @@ func init() {
 	rootCmd.AddCommand(statsCmd)
 	rootCmd.AddCommand(topCmd)
 	rootCmd.AddCommand(volumeCmd)
+	rootCmd.AddCommand(networkCmd)
+	rootCmd.AddCommand(eventsCmd)
 	rootCmd.AddCommand(versionCmd)
 }
 
@@ -117,10 +119,15 @@ var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print the version number",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("containr version 2.0.0 (Phase 2 Complete)")
-		fmt.Println("- Enhanced CLI with full lifecycle management")
-		fmt.Println("- Volume management support")
-		fmt.Println("- Registry integration (pull images)")
-		fmt.Println("- User namespace support for rootless containers")
+		fmt.Println("containr version 3.0.0 (Phase 3 Complete)")
+		fmt.Println("Phase 3 - Advanced Features:")
+		fmt.Println("- Enhanced networking (port mapping, network modes, DNS)")
+		fmt.Println("- Network management commands (create, ls, rm, inspect)")
+		fmt.Println("- Monitoring & observability (metrics, events API)")
+		fmt.Println("- Health checks and restart policies")
+		fmt.Println("- Basic Dockerfile parser foundation")
+		fmt.Println("\nPrevious Phases:")
+		fmt.Println("- Phase 2: Enhanced CLI, volumes, registry, user namespaces")
+		fmt.Println("- Phase 1: Core features, security, error handling, logging")
 	},
 }
