@@ -1,0 +1,34 @@
+# These are supported funding model platforms
+
+# GitHub Sponsors
+github: # [therealutkarshpriyadarshi]  # Uncomment and add username when ready
+
+# Patreon
+patreon: # containr  # Uncomment when Patreon is set up
+
+# Open Collective
+open_collective: # containr  # Uncomment when Open Collective is set up
+
+# Ko-fi
+ko_fi: # containr  # Uncomment when Ko-fi is set up
+
+# Tidelift
+tidelift: # npm/containr  # Uncomment when Tidelift is set up
+
+# Community Bridge (LFX Crowdfunding)
+community_bridge: # containr  # Uncomment when set up
+
+# Liberapay
+liberapay: # containr  # Uncomment when set up
+
+# IssueHunt
+issuehunt: # containr  # Uncomment when set up
+
+# Otechie
+otechie: # containr  # Uncomment when set up
+
+# LFX Mentorship (Linux Foundation)
+lfx_crowdfunding: # containr  # Uncomment when set up
+
+# Custom URLs
+custom: # ['https://paypal.me/containr', 'https://buymeacoffee.com/containr']  # Uncomment and add URLs when ready
