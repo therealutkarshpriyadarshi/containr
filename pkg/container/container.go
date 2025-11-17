@@ -7,26 +7,36 @@ import (
 	"path/filepath"
 	"syscall"
 
+	"github.com/therealutkarshpriyadarshi/containr/pkg/capabilities"
 	"github.com/therealutkarshpriyadarshi/containr/pkg/namespace"
+	"github.com/therealutkarshpriyadarshi/containr/pkg/seccomp"
+	"github.com/therealutkarshpriyadarshi/containr/pkg/security"
 )
 
 // Container represents a container instance
 type Container struct {
-	ID         string
-	RootFS     string
-	Command    []string
-	WorkingDir string
-	Hostname   string
-	Namespaces []namespace.NamespaceType
+	ID           string
+	RootFS       string
+	Command      []string
+	WorkingDir   string
+	Hostname     string
+	Namespaces   []namespace.NamespaceType
+	Capabilities *capabilities.Config
+	Seccomp      *seccomp.Config
+	Security     *security.Config
 }
 
 // Config holds container configuration
 type Config struct {
-	RootFS     string
-	Command    []string
-	WorkingDir string
-	Hostname   string
-	Isolate    bool // Enable full isolation
+	RootFS       string
+	Command      []string
+	WorkingDir   string
+	Hostname     string
+	Isolate      bool // Enable full isolation
+	Capabilities *capabilities.Config
+	Seccomp      *seccomp.Config
+	Security     *security.Config
+	Privileged   bool // Run in privileged mode (disables security restrictions)
 }
 
 // New creates a new container instance
@@ -46,13 +56,56 @@ func New(config *Config) *Container {
 		)
 	}
 
+	// Set up default security configurations if not provided
+	capConfig := config.Capabilities
+	if capConfig == nil {
+		if config.Privileged {
+			// Privileged mode: allow all capabilities
+			capConfig = &capabilities.Config{
+				AllowAll: true,
+			}
+		} else {
+			// Default: use default safe capability set
+			capConfig = &capabilities.Config{}
+		}
+	}
+
+	seccompConfig := config.Seccomp
+	if seccompConfig == nil {
+		if config.Privileged {
+			// Privileged mode: disable seccomp
+			seccompConfig = &seccomp.Config{
+				Disabled: true,
+			}
+		} else {
+			// Default: use default restrictive profile
+			seccompConfig = &seccomp.Config{}
+		}
+	}
+
+	securityConfig := config.Security
+	if securityConfig == nil {
+		if config.Privileged {
+			// Privileged mode: disable LSM
+			securityConfig = &security.Config{
+				Disabled: true,
+			}
+		} else {
+			// Default: auto-detect and use LSM
+			securityConfig = &security.Config{}
+		}
+	}
+
 	return &Container{
-		ID:         id,
-		RootFS:     config.RootFS,
-		Command:    config.Command,
-		WorkingDir: config.WorkingDir,
-		Hostname:   config.Hostname,
-		Namespaces: namespaces,
+		ID:           id,
+		RootFS:       config.RootFS,
+		Command:      config.Command,
+		WorkingDir:   config.WorkingDir,
+		Hostname:     config.Hostname,
+		Namespaces:   namespaces,
+		Capabilities: capConfig,
+		Seccomp:      seccompConfig,
+		Security:     securityConfig,
 	}
 }
 
@@ -149,6 +202,32 @@ func SetupChild() error {
 	// Mount proc filesystem
 	if err := mountProc(); err != nil {
 		return fmt.Errorf("failed to mount /proc: %w", err)
+	}
+
+	return nil
+}
+
+// ApplySecurity applies security configurations (capabilities, seccomp, LSM)
+func (c *Container) ApplySecurity() error {
+	// Apply LSM (AppArmor/SELinux) first
+	if c.Security != nil {
+		if err := c.Security.Apply(); err != nil {
+			return fmt.Errorf("failed to apply LSM configuration: %w", err)
+		}
+	}
+
+	// Apply seccomp profile
+	if c.Seccomp != nil {
+		if err := c.Seccomp.Apply(); err != nil {
+			return fmt.Errorf("failed to apply seccomp profile: %w", err)
+		}
+	}
+
+	// Apply capabilities last (drop/add as needed)
+	if c.Capabilities != nil {
+		if err := c.Capabilities.Apply(); err != nil {
+			return fmt.Errorf("failed to apply capabilities: %w", err)
+		}
 	}
 
 	return nil
