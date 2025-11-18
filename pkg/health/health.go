@@ -2,7 +2,6 @@ package health
 
 import (
 	"context"
-	"fmt"
 	"os/exec"
 	"strings"
 	"sync"

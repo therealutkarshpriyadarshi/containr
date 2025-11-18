@@ -92,7 +92,7 @@ func NewController(config *Config) *Controller {
 		branch:      config.Branch,
 		interval:    config.Interval,
 		deployments: make(map[string]*Deployment),
-		logger:      logger.New(logger.InfoLevel),
+		logger:      logger.New("gitops-controller"),
 	}
 }
 
@@ -288,7 +288,7 @@ type Reconciler struct {
 func NewReconciler(controller *Controller) *Reconciler {
 	return &Reconciler{
 		controller: controller,
-		logger:     logger.New(logger.InfoLevel),
+		logger:     logger.New("gitops-reconciler"),
 	}
 }
 
@@ -336,7 +336,7 @@ type Step struct {
 // NewPipelineExecutor creates a new pipeline executor
 func NewPipelineExecutor() *PipelineExecutor {
 	return &PipelineExecutor{
-		logger: logger.New(logger.InfoLevel),
+		logger: logger.New("pipeline-executor"),
 	}
 }
 

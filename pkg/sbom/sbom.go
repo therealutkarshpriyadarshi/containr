@@ -131,7 +131,7 @@ type Config struct {
 func NewGenerator(format SBOMFormat) *Generator {
 	return &Generator{
 		format: format,
-		logger: logger.New(logger.InfoLevel),
+		logger: logger.New("sbom"),
 	}
 }
 
@@ -143,7 +143,7 @@ func (g *Generator) Generate(ctx context.Context, imageRef string) (*SBOM, error
 	image := &ImageMetadata{
 		Name:      imageRef,
 		Tag:       "latest",
-		Timestamp: time.Now(),
+		Created: time.Now(),
 	}
 
 	// Scan for packages
@@ -215,7 +215,7 @@ func (g *Generator) Export(sbom *SBOM, outputPath string) error {
 func NewScanner(backend ScannerBackend) *Scanner {
 	return &Scanner{
 		backend: backend,
-		logger:  logger.New(logger.InfoLevel),
+		logger:  logger.New("sbom"),
 	}
 }
 
@@ -229,7 +229,7 @@ func (s *Scanner) Scan(ctx context.Context, imageRef string) (*ScanResult, error
 	result := &ScanResult{
 		Image: &ImageMetadata{
 			Name:      imageRef,
-			Timestamp: time.Now(),
+			Created: time.Now(),
 		},
 		Timestamp:      time.Now(),
 		Scanner:        string(s.backend),
@@ -331,7 +331,7 @@ func NewComplianceChecker(allowedLicenses, deniedLicenses []string, maxSeverity 
 		allowedLicenses: allowedLicenses,
 		deniedLicenses:  deniedLicenses,
 		maxSeverity:     maxSeverity,
-		logger:          logger.New(logger.InfoLevel),
+		logger:          logger.New("sbom"),
 	}
 }
 
