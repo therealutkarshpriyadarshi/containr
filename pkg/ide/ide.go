@@ -33,7 +33,7 @@ type Config struct {
 // NewIDEIntegration creates a new IDE integration
 func NewIDEIntegration(config *Config) *IDEIntegration {
 	return &IDEIntegration{
-		logger: logger.New(logger.InfoLevel),
+		logger: logger.New("ide"),
 	}
 }
 
@@ -70,7 +70,7 @@ func (ide *IDEIntegration) StartLSPServer(ctx context.Context, port int) error {
 func (ide *IDEIntegration) StartDebugAdapter(ctx context.Context, port int) error {
 	ide.debugAdapter = &DebugAdapter{
 		port:   port,
-		logger: logger.New(logger.InfoLevel),
+		logger: logger.New("ide"),
 	}
 
 	ide.logger.Info("Debug adapter listening", "port", port)

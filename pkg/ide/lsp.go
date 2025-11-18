@@ -115,7 +115,7 @@ const (
 func NewLSPServer(conn io.ReadWriteCloser) *LSPServer {
 	return &LSPServer{
 		conn:      conn,
-		logger:    logger.New(logger.InfoLevel),
+		logger:    logger.New("lsp"),
 		documents: make(map[string]*Document),
 		capabilities: ServerCapabilities{
 			TextDocumentSync: 1, // Full sync
@@ -361,7 +361,7 @@ func (s *LSPServer) publishDiagnostics(uri string) error {
 // getDiagnostics gets diagnostics for a document
 func (s *LSPServer) getDiagnostics(uri string) []Diagnostic {
 	s.mu.RLock()
-	doc, ok := s.documents[uri]
+	_, ok := s.documents[uri]
 	s.mu.RUnlock()
 
 	if !ok {

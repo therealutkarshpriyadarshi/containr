@@ -234,7 +234,7 @@ CMD ["echo", "test"]
 	}
 
 	// Create build context
-	context, err := NewBuildContext(tmpDir)
+	buildCtx, err := NewBuildContext(tmpDir)
 	if err != nil {
 		t.Fatalf("Failed to create build context: %v", err)
 	}
@@ -246,7 +246,7 @@ CMD ["echo", "test"]
 		NoCache:   true,
 	}
 
-	builder, err := NewBuilder(dockerfile, context, config)
+	builder, err := NewBuilder(dockerfile, buildCtx,config)
 	if err != nil {
 		t.Fatalf("Failed to create builder: %v", err)
 	}
@@ -283,7 +283,7 @@ RUN echo "test"
 
 	parser := NewParser()
 	dockerfile, _ := parser.ParseFile(dockerfilePath)
-	context, _ := NewBuildContext(tmpDir)
+	buildCtx, _ := NewBuildContext(tmpDir)
 
 	// First build with cache
 	config1 := &BuildConfig{
@@ -292,7 +292,7 @@ RUN echo "test"
 		NoCache:   false,
 	}
 
-	builder1, _ := NewBuilder(dockerfile, context, config1)
+	builder1, _ := NewBuilder(dockerfile, buildCtx,config1)
 	ctx := context.Background()
 	_, err := builder1.Build(ctx)
 	if err != nil {
@@ -306,7 +306,7 @@ RUN echo "test"
 		NoCache:   false,
 	}
 
-	builder2, _ := NewBuilder(dockerfile, context, config2)
+	builder2, _ := NewBuilder(dockerfile, buildCtx,config2)
 	_, err = builder2.Build(ctx)
 	if err != nil {
 		t.Fatalf("Second build failed: %v", err)

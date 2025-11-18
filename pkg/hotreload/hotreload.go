@@ -64,7 +64,7 @@ func NewWatcher(config *Config) *Watcher {
 		onChange:       config.OnChange,
 		onError:        config.OnError,
 		events:         make(chan *FileEvent, 100),
-		logger:         logger.New(logger.InfoLevel),
+		logger:         logger.New("hotreload"),
 	}
 }
 
@@ -190,7 +190,7 @@ func NewSyncer(containerID string) *Syncer {
 	return &Syncer{
 		containerID: containerID,
 		syncPairs:   make([]*SyncPair, 0),
-		logger:      logger.New(logger.InfoLevel),
+		logger:      logger.New("hotreload"),
 	}
 }
 
@@ -281,7 +281,7 @@ func NewReloadManager(containerID string, strategy ReloadStrategy) *ReloadManage
 	return &ReloadManager{
 		containerID: containerID,
 		strategy:    strategy,
-		logger:      logger.New(logger.InfoLevel),
+		logger:      logger.New("hotreload"),
 	}
 }
 
@@ -389,7 +389,7 @@ func NewDevEnvironment(containerID string, config *Config) *DevEnvironment {
 		watcher:       watcher,
 		syncer:        syncer,
 		reloadManager: reloadManager,
-		logger:        logger.New(logger.InfoLevel),
+		logger:        logger.New("hotreload"),
 	}
 }
 

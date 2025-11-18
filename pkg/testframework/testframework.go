@@ -100,7 +100,7 @@ type TestRunner struct {
 // NewTestRunner creates a new test runner
 func NewTestRunner() *TestRunner {
 	return &TestRunner{
-		logger: logger.New(logger.InfoLevel),
+		logger: logger.New("testframework"),
 	}
 }
 
@@ -206,7 +206,7 @@ type BehaviorRunner struct {
 // NewBehaviorRunner creates a new behavior test runner
 func NewBehaviorRunner() *BehaviorRunner {
 	return &BehaviorRunner{
-		logger: logger.New(logger.InfoLevel),
+		logger: logger.New("testframework"),
 	}
 }
 
@@ -261,7 +261,7 @@ type IntegrationRunner struct {
 // NewIntegrationRunner creates a new integration test runner
 func NewIntegrationRunner() *IntegrationRunner {
 	return &IntegrationRunner{
-		logger: logger.New(logger.InfoLevel),
+		logger: logger.New("testframework"),
 	}
 }
 

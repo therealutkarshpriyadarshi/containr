@@ -87,7 +87,7 @@ func NewDebugger(config *Config) *Debugger {
 		containerID: config.ContainerID,
 		breakpoints: make(map[string]*Breakpoint),
 		syscallTrace: config.EnableTrace,
-		logger:      logger.New(logger.InfoLevel),
+		logger:      logger.New("debugger"),
 	}
 }
 
@@ -297,7 +297,7 @@ func NewInteractiveSession(debugger *Debugger) *InteractiveDebugSession {
 		debugger: debugger,
 		commands: make(chan string, 10),
 		events:   make(chan *TraceEvent, 100),
-		logger:   logger.New(logger.InfoLevel),
+		logger:   logger.New("debug-session"),
 	}
 }
 
@@ -381,7 +381,7 @@ type Profiler struct {
 func NewProfiler(config *ProfilerConfig) *Profiler {
 	return &Profiler{
 		config: config,
-		logger: logger.New(logger.InfoLevel),
+		logger: logger.New("profiler"),
 	}
 }
 
