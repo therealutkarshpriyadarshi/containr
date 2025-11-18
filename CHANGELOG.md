@@ -7,6 +7,151 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.3.0] - 2025-11-18
+
+### Phase 8: Developer Experience & Advanced Tooling
+
+#### Added - IDE Integration & LSP Support
+- **Language Server Protocol** (`pkg/ide`)
+  - LSP server implementation for Dockerfile and Containrfile
+  - IntelliSense and autocomplete for Docker instructions
+  - Real-time syntax validation and diagnostics
+  - Code snippets and templates
+  - Multi-editor support (VS Code, Vim, Emacs)
+  - Hover information for instructions
+  - Go-to-definition support
+- **Debug Adapter Protocol**
+  - Debug adapter for interactive debugging
+  - Breakpoint support
+  - Variable inspection
+
+#### Added - Advanced Debugging & Profiling
+- **Interactive Debugger** (`pkg/debug`)
+  - Attach debugger to running containers
+  - Breakpoint management (syscall, network, file, process)
+  - Interactive debug session with command interface
+  - Step-through execution
+  - Call stack inspection
+- **System Call Tracing**
+  - Real-time syscall monitoring with ptrace
+  - Syscall filtering and event tracking
+  - Performance impact analysis
+- **Performance Profiling**
+  - CPU profiling with pprof integration
+  - Memory profiling and leak detection
+  - Goroutine analysis and dump
+  - Allocation tracing
+  - Block and mutex profiling
+
+#### Added - SBOM Generation & Security Scanning
+- **SBOM Generation** (`pkg/sbom`)
+  - Multiple format support (SPDX, CycloneDX, Syft)
+  - Package discovery and metadata extraction
+  - Dependency graph building
+  - License tracking
+  - SBOM export and import
+- **Vulnerability Scanning**
+  - Multiple scanner backends (Trivy, Grype, Clair, Anchore)
+  - CVE tracking and reporting
+  - Severity filtering and categorization
+  - Scan result export in multiple formats
+  - Vulnerability remediation suggestions
+- **Compliance Checking**
+  - License compliance validation
+  - Security policy enforcement
+  - Compliance reporting
+  - Custom policy support
+
+#### Added - GitOps & CI/CD Integration
+- **GitOps Controller** (`pkg/gitops`)
+  - Git repository monitoring and synchronization
+  - Automatic deployment from Git manifests
+  - Declarative deployment specifications
+  - Deployment reconciliation
+  - Rollback support
+  - Multi-environment management
+- **CI/CD Pipeline Execution**
+  - Pipeline definition and execution
+  - Multi-stage pipeline support
+  - Step-by-step execution
+  - Dependency management between stages
+  - Pipeline status tracking
+
+#### Added - Hot Reload & Development Workflows
+- **File Watching** (`pkg/hotreload`)
+  - Real-time file change detection
+  - Pattern-based ignore rules
+  - Debouncing and throttling
+  - Event filtering
+- **File Synchronization**
+  - Bidirectional file sync
+  - Host-to-container and container-to-host sync
+  - Sync pair management
+  - Continuous synchronization
+  - Exclude patterns
+- **Reload Management**
+  - Multiple reload strategies (restart, signal, exec, rolling)
+  - Container restart on file changes
+  - Signal-based reload (SIGHUP, etc.)
+  - Exec-based reload with custom commands
+  - Reload statistics tracking
+- **Development Environment**
+  - Integrated dev environment setup
+  - Template-based configurations
+  - Auto-reload on code changes
+  - Debug port forwarding
+
+#### Added - Container Testing Framework
+- **Test Runner** (`pkg/testframework`)
+  - Container unit testing
+  - Test execution with timeout
+  - Parallel test execution
+  - Test fixture management
+- **Assertion Framework**
+  - Exit code assertions
+  - Output contains assertions
+  - Port open assertions
+  - File exists assertions
+  - Custom assertion support
+- **Behavior-Driven Testing**
+  - BDD-style test structure (Given/When/Then)
+  - Scenario-based testing
+  - Test description and documentation
+- **Integration Testing**
+  - Multi-container test scenarios
+  - Test environment setup and teardown
+  - Network and volume management for tests
+  - Integration test orchestration
+
+#### CLI Commands Added
+- `containr ide lsp` - Start Language Server Protocol server
+- `containr ide debug` - Start debug adapter
+- `containr debug attach <container>` - Attach debugger
+- `containr debug interactive <container>` - Interactive debug session
+- `containr debug trace <container>` - Trace syscalls
+- `containr debug profile cpu <container>` - CPU profiling
+- `containr debug profile memory <container>` - Memory profiling
+- `containr sbom generate <image>` - Generate SBOM
+- `containr scan <image>` - Scan for vulnerabilities
+- `containr compliance check <image>` - Check compliance
+- `containr gitops init <repo>` - Initialize GitOps
+- `containr gitops start` - Start GitOps controller
+- `containr gitops sync` - Manual synchronization
+- `containr dev <container>` - Start development mode
+- `containr dev stats <container>` - View reload statistics
+- `containr test run <path>` - Run container tests
+
+#### Documentation
+- Added comprehensive Phase 8 documentation (docs/PHASE8.md)
+- Added Phase 8 tutorial (docs/tutorials/15-phase8-developer-experience.md)
+- Updated README with Phase 8 features
+
+## [1.2.0] - 2025-11-17
+
+### Phase 7: Advanced Production Features & Enterprise Integration
+
+[Previous Phase 7 content...]
+
 ## [1.1.0] - 2025-11-17
 
 ### Phase 6: Cloud-Native Integration & Advanced Runtime

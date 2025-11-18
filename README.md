@@ -2,11 +2,43 @@
 
 A minimal container runtime built from scratch using Linux primitives. This project demonstrates the core concepts behind Docker and other container runtimes by implementing process isolation using namespaces, resource limits with cgroups, and filesystem isolation.
 
-**🚀 Phase 7 Complete - Enterprise Production Features!** Containr now includes RBAC multi-tenancy, advanced observability with OpenTelemetry, container checkpointing & live migration, service mesh integration, enterprise security with OPA/Cosign, and CSI storage with encryption. All seven phases complete!
+**🎉 Phase 8 Complete - Developer Experience & Advanced Tooling!** Containr now includes IDE integration with LSP support, advanced debugging and profiling, SBOM generation and security scanning, GitOps continuous deployment, hot reload for rapid development, and a comprehensive container testing framework. All eight phases complete!
 
 ## Features
 
-### 🏢 Phase 7: Advanced Production Features & Enterprise Integration (NEW!)
+### 🛠️ Phase 8: Developer Experience & Advanced Tooling (NEW!)
+- ✅ **IDE Integration & LSP Support**: First-class editor integration
+  - **Language Server Protocol**: IntelliSense, autocomplete, and validation
+  - **Real-time Diagnostics**: Instant error detection for Dockerfiles
+  - **Code Snippets**: Smart templates for common patterns
+  - **Multi-Editor Support**: VS Code, Vim, Emacs, and more
+- ✅ **Advanced Debugging & Profiling**: Deep container inspection
+  - **Interactive Debugger**: Breakpoints and step-through execution
+  - **System Call Tracing**: Monitor all syscalls in real-time
+  - **Performance Profiling**: CPU, memory, and I/O profiling
+  - **Live Inspection**: Debug running containers without restart
+- ✅ **SBOM & Security Scanning**: Automated security analysis
+  - **SBOM Generation**: SPDX, CycloneDX, and Syft formats
+  - **Vulnerability Scanning**: Trivy, Grype, Clair integration
+  - **License Compliance**: Track and enforce license policies
+  - **CVE Tracking**: Comprehensive vulnerability management
+- ✅ **GitOps & CI/CD Integration**: Continuous deployment automation
+  - **Git-Based Deployment**: Declarative infrastructure as code
+  - **Automatic Synchronization**: Real-time deployment updates
+  - **Pipeline Execution**: Integrated CI/CD workflows
+  - **Rollback Support**: Easy rollback to previous versions
+- ✅ **Hot Reload & Development Workflows**: Rapid development iteration
+  - **File Watching**: Automatic detection of code changes
+  - **Instant Sync**: Bidirectional file synchronization
+  - **Multiple Reload Strategies**: Restart, signal, or exec-based
+  - **Development Templates**: Pre-configured dev environments
+- ✅ **Container Testing Framework**: Comprehensive testing utilities
+  - **Unit Testing**: Test individual containers
+  - **Behavior-Driven Testing**: BDD-style test framework
+  - **Integration Testing**: Multi-container test scenarios
+  - **Rich Assertions**: Extensive assertion library
+
+### 🏢 Phase 7: Advanced Production Features & Enterprise Integration
 - ✅ **RBAC & Multi-Tenancy**: Enterprise-grade access control
   - **Role-Based Access Control**: Fine-grained permissions and user management
   - **Resource Quotas**: CPU, memory, storage, and container limits per user
@@ -784,7 +816,8 @@ For more troubleshooting help, see:
 ## Further Reading
 
 ### Containr Documentation
-- 🏢 [Phase 7 Documentation](docs/PHASE7.md) - Enterprise production features (Phase 7) **NEW!**
+- 🛠️ [Phase 8 Documentation](docs/PHASE8.md) - Developer experience & advanced tooling (Phase 8) **NEW!**
+- 🏢 [Phase 7 Documentation](docs/PHASE7.md) - Enterprise production features (Phase 7)
 - ☁️ [Phase 6 Documentation](docs/PHASE6.md) - Cloud-native integration guide (Phase 6)
 - 🌱 [Phase 5 Documentation](docs/PHASE5.md) - Community & growth guide (Phase 5)
 - 🎯 [Phase 4 Documentation](docs/PHASE4.md) - Production polish guide (Phase 4)
